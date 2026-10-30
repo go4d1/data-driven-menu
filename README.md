@@ -125,3 +125,7 @@ Then review the diff before committing. The export leaves out data that belongs
 to a running site rather than a fresh install: email campaigns (`sendemail`),
 photo records (`photos`, whose files are in `uploads/`), and `fompages`. Rows
 listed in `ROW_FILTERS` in [db/export.js](db/export.js) are also left out.
+
+## License
+
+[MIT](LICENSE) © 2026 Martin Glynn
