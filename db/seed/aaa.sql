@@ -1122,12 +1122,12 @@ INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction
 INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101220', '0', 'Guest', '', '', '10', '0', '', NULL, NULL, '', NULL, '', '', NULL, NULL);
 INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101221', '1', 'SqlQuery2', 'SqlQuery2.html', '', '1009', '0', '', NULL, NULL, '', NULL, '', 'fom-lc', NULL, NULL);
 INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101230', '101124', 'Doctors', '', '', '100', '0', '', NULL, NULL, '', NULL, '', '', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101231', '101230', 'Dashboard', 'aaa/doctors/pages/dashboard.html', '', '1', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101231', '101230', 'Dashboard', 'tenants/aaa/doctors/pages/dashboard.html', '', '1', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 
@@ -1183,12 +1183,12 @@ INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction
 
   loadDashboard();
 ', NULL, '', 'fom-lc', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101232', '101230', 'Upload Doctors', 'aaa/doctors/pages/upload-doctors.html', '', '2', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101232', '101230', 'Upload Doctors', 'tenants/aaa/doctors/pages/upload-doctors.html', '', '2', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 
@@ -1251,12 +1251,12 @@ INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction
     $(''#uploadDoctorsResult'').empty();
   }
 ', NULL, '', 'fom-lc', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101233', '101230', 'Browse Doctors', 'aaa/doctors/pages/browse-doctors.html', '', '3', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101233', '101230', 'Browse Doctors', 'tenants/aaa/doctors/pages/browse-doctors.html', '', '3', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 
@@ -1411,12 +1411,12 @@ INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction
 
   loadDoctors();
 ', NULL, '', 'fom-lc', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101234', '101230', 'Upload Offices', 'aaa/doctors/pages/upload-offices.html', '', '4', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101234', '101230', 'Upload Offices', 'tenants/aaa/doctors/pages/upload-offices.html', '', '4', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 
@@ -1479,12 +1479,12 @@ INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction
     $(''#uploadOfficesResult'').empty();
   }
 ', NULL, '', 'fom-lc', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101235', '101230', 'Browse Offices', 'aaa/doctors/pages/browse-offices.html', '', '5', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101235', '101230', 'Browse Offices', 'tenants/aaa/doctors/pages/browse-offices.html', '', '5', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 
@@ -1647,21 +1647,21 @@ INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction
 
   loadOffices();
 ', NULL, '', 'fom-lc', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101236', '101230', 'Follow-up Emails', 'aaa/doctors/pages/followup-emails.html', '', '6', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101236', '101230', 'Follow-up Emails', 'tenants/aaa/doctors/pages/followup-emails.html', '', '6', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 ', NULL, '', 'fom-lc', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101237', '101230', 'Reports', 'aaa/doctors/pages/reports.html', '', '7', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101237', '101230', 'Reports', 'tenants/aaa/doctors/pages/reports.html', '', '7', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 
@@ -1805,12 +1805,12 @@ INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction
     $(''#reportContent'').html(html);
   }
 ', NULL, '', 'fom-lc', NULL, NULL);
-INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101238', '101230', 'Settings', 'aaa/doctors/pages/settings.html', '', '8', '0', '', NULL, NULL, '
+INSERT INTO "public"."fommenu" ("pk", "parentpk", "cprompt", "chref", "cfunction", "isort", "ilevel", "crole", "objective", "cexec", "jscript", "lparent", "chtml", "jqclass", "class", "private") VALUES ('101238', '101230', 'Settings', 'tenants/aaa/doctors/pages/settings.html', '', '8', '0', '', NULL, NULL, '
   if (!document.getElementById(''doctors-admin-css'')) {
     const l = document.createElement(''link'');
     l.id = ''doctors-admin-css'';
     l.rel = ''stylesheet'';
-    l.href = ''/aaa/doctors/admin.css'';
+    l.href = ''/tenants/aaa/doctors/admin.css'';
     document.head.appendChild(l);
   }
 

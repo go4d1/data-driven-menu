@@ -1134,7 +1134,7 @@ INSERT INTO "public"."users" ("id", "firstname", "lastname", "email", "phone", "
 INSERT INTO "public"."users" ("id", "firstname", "lastname", "email", "phone", "role", "active", "created_at", "permission", "password") VALUES ('161', 'AAA', 'DDD', 'aaa@ddm.com', NULL, 'i,m', 't', '2026-10-30 14:32:54.929084', '100', 'c867af94b3e77e40ab5972a1c1e5a17f:b5adb474416e66752b0eee6f24adca92420ff31358cbf653eca4045385a2a9054d094e850e4f81b4417c638aa23ae25e707e711c6d39dd8a4fc21c892e120f5e');
 SELECT setval(pg_get_serial_sequence('"public"."users"', 'id'), COALESCE(MAX("id"), 1), MAX("id") IS NOT NULL) FROM "public"."users";
 
--- theater.plays: 192 rows
+-- theater.plays: 188 rows
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('1', 'The John Wayne Principle', 'by Tony McNamara', 'A searing portrait of the insidious attractions of corporate life, "The John Wayne Principle" tells the story a cynical, anti-establishment trust-fund kid who is picked to succeed his father as CEO of a multinational corporation.  Instead of turning down the post, as his ambitious, business-minded sister had expected, he decides to sign on for a year, sending the company''s stock into a tailspin.  His sister''s attempts to undermine his tenure only serve to fuel his enthusiasm for the job, and, as their sibling rivalry takes on sexual-political overtones, one is left to wonder if this rebel riding rough-shod on the company wants to break or break in the system.', 'Festival');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('2', 'Men', 'by Brendon Cowell', 'Guy, Jules & Crazy Bob find themselves trapped in the most important hour of their lives as they struggle to define who they are, what they have done, and the type of MEN they will become when it is all over. Strangely lorded over by the disembodied female voice of Haizel, and the terrifying approach of the ‘end'', so begins a wildly energetic and often dangerous romp through the dark side of masculinity and beyond...', 'Drama');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('3', 'The Secret Narrative Of The Phone Book', 'By Gordon Cox, directed by Suzanne Agins', 'A romantic comedy hijacked by a conspiracy thriller.  It follows a sexy freedom fighter''s daring plan to corrupt a global media conglomerate by seducing two of its employees at the same time. Its tongue-in-cheek techno-paranoia seriously questions the possibility of a genuine connection between human beings', 'Festival');
@@ -1239,56 +1239,6 @@ INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('41
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('42', 'DRIVING WHILE BLACK and other Felonious Funk', 'written and directed by Ron Beverly', 'Model citizen Jonathan Q. Downing is pulled over by the cops for a ''minor'' traffic violation.  He is then arrested and molested and his beliefs will be tested - because Jonathan ends up on death row!  And that''s when the fun really begins.  Driving While Black & Other Felonious Funk also takes a sardonic look at the plethora of reality TV shows that currently clog the airwaves.  Jonathan is not only in prison, but he may also star in a new reality TV series, "Who Wants To Be On Death Row?" ', 'Actor');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('43', 'Haven', 'written and performed by Sarah Kahn', 'Playwright/performer Sara Kahn revisits her personal journey from musical comedy performer to human rights worker in a one-person play with music. HAVEN transports audiences from the war zones of Bosnia, Sierra Leone and Afghanistan to the back alleys of Newark to tell the stories of four extraordinary refugees the playwright encountered in her work.', 'Actor');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('44', 'There are Crimes and Crimes (Intoxication)', 'by August Strindberg', 'Partly a comedy of manners and a melodrama of crime and detective work, the 1899 work is an exploration of conflicting desires and the pangs of conscience. The characters are young artistis, writers adn performers who populate the bohemian world of turn-of-the-century Paris.  In this provocative work, Strindberg projects human drives into a richly theatrical landscape of movement, sound, dance and images.', 'Actor');
-INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('45', 'Jagger Kaye''s On Going Acting Classes', 'Jagger Kaye', 'Learn from a working Actor ("ED", National Commercials, Dozens of films), 
-Writer & Director (over 25 stage shows & 2 short films). 
-
-Jagger is one of the most respected sources for outing acting/model scams and 
-owns/operates the NYC areas most respected FREE casting groups - 
-NYCCasting@yahoogroups.com - http://groups.yahoo.com/group/NYCCasting 
-
-Jagger is also an Independent Casting Director & a Career Consultant (over 3 
-dozen clients). 
-
-Class: Acting For Beginners 
-
-Taught by Jagger Kaye of NYCCASTING@yahoogroups & JKCasting 
-A 4-week course beginning Sunday April 24th, 2005 
-
-Schedule: Sundays 1:00 - 3:00pm (April 24th, May 1st, 15th, 22nd)
-Class size only 8 students
-Price: Only $110 for 4 classes 
-Description: A course on how to begin as an actor. We will discuss the 
-business of being an actor, Work on scripts. Prepare you to audition 
-& most of all have FUN. 
-Location: The Producers Club Theaters - 358 W.44th NYC 
-
-&
-
-COMEDIC ACTING class & a show!
-
-Learn the difference between "sketch comedy" (someone falling down) & "comedic acting" (why that person fell down). The difference between SNL & a show like Frasier!
-
-Taught by Jagger Kaye of NYCCASTING@yahoogroups & JKCasting
-A 5-week course beginning Sunday April 24th, 2005
-
-5 weeks of classes that end in a mini-show (45 - 60 minutes)
-The dates are:
-Sunday, April 24, 3-6pm
-Sunday, May 1, 3-6pm
-Sunday, May 15, 3-6pm
-Sunday, May 22, 3-6pm
-Sunday, June 5 3-7pm
-
-Performance June 5 at 8pm
-
-Cost for all is only $155 & that includes 2 comp tickets for the performance
-
-Everyone will play 3+ characters in the presentation
-
-This is for someone that would like to learn the nuances of comedy & can get a stage credit as well ... of course this will be a LOT of fun
-
-Jagger Kaye
-JaggerKayeClass@teacher.com', 'Director');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('46', 'Seven 11.2005', 'directed by G.R. Johnson', 'Desipina & Company''s seven.11.2005 is a series of seven 11-minute plays set in the American convenience store, a dominant American consumer presence from coast to coast and the ideal symbol for the mini-productions which challenge and redefine existing stereotypes of immigrant convenience store employees while exploring the diversity of South Asian  nd Asian Pacific American cultural experiences. .
 
 The seven plays for this year''s production are:
@@ -1636,33 +1586,6 @@ set design Joe Powell, costume design Meghan Healey, lighting design Where
 stage manager Aime Kelly, assistant director Jamie Klessel
 
 producers Bryan Billig, Heather Morris, John Richardson & Jinn S. Kim', 'Comedian');
-INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('121', 'Cemetery of Lips', 'by Nancy Ancowitz', 'After sold-out performances in the New York International Fringe Festival, Nancy Ancowitz''s play, "Cemetery of Lips," was selected in to the Six Figures Theatre Company Artists of Tomorrow Festival. Performances are on Saturday, October 1 at 7 p.m., and Sunday, October 2 at 5 p.m. at the West End Theatre at 263 West 86 Street, 2nd floor.
-
-"Cemetery of Lips" is the story of a woman who thought she had nothing to say. With her signature brand of macabre humor and her deliciously surreal language, playwright Nancy Ancowitz lures us down the alimentary canal to a reservoir of unspoken thoughts and desires. Here amid her swallowed words, our intrepid heroine sets off to reclaim her missing truth. Fearless in its message, the play combines thrillingly poetic riffs, deliciously surreal rants, and a powerhouse performance with hand-drums and violin. Expect a wild ride. Bring your lips. Bring your chap stick.
-
-Nancy Ancowitz is a nationally recognized marketing strategist and coach who helps people express themselves with confidence. She wrote "Cemetery of Lips" to mark her return to a creative life after a long stint in the corporate world. Originally developed as part of the Artists-In-Residence Program at Makor (West Side Center of the 92 Street Y), "Cemetery of Lips" was selected into the CUNY Human Rights Theatre Project. Ms. Ancowitz''s full-length play, "Hablo, Diablo" (translation: "I Speak, Devil") enjoyed sold-out staged readings at Makor in May 2005.
-
-Performer Jaye Austin Williams is an actor, director, playwright, teacher, and novelist. Her critically acclaimed performance of Suzan-Lori Parks'' one-woman play, "Pickling," was presented at HERE, Joe''s Pub, the Mint, and at the Cherry Lane. Jaye''s work has been seen on and off Broadway and regionally. Her first novel, "Jasmine," will be published by HarperCollins in the fall of 2006.
-
-Director Barbara Rubin made her Off-Broadway debut last season with Antigone Project at The Women''s Project, and she was the associate director on the recent Broadway production of "A Streetcar Named Desire." Previously on Broadway she was assistant director on "The Dance of Death" and "The Elephant Man." She was also assistant director to Athol Fugard on "Sorrows and Rejoicings" at McCarter Theatre and at Second Stage in New York.
-
-"Cemetery of Lips" is an enchanting spoken word performance. A percussive dream with a lot of surprises and a little bite....
-
-By: Nancy Ancowitz
-Directed by: Barbara Rubin
-Starring: Jaye Austin Williams
-On drums: Anoush
-On violin: Joyce Chen 
-Assistant director: Greg Cicchino
-Production stage manager: Jamie Rog
-Costume designer: Anoush
-Set designer: Michael V. Moore
-Lighting designer: Jesse Belsky
-Associate producer: Samuel A. Morris
- 
-Graphic design: Liz Kinnmark
-ekinnmar@andrew.cmu.edu
-', 'Author');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('122', 'kamp NYC presents "Break Through"', ' Written by Mike Turner', 'Hello, I''m Joe Loera the Founder/Producer of kamp NYC, an intensive one-of-a-kind Broadway experience, started three years ago to train the most talented young performers in the United States and abroad. With the assistance of the best instructors in New York City, these twenty young talented individuals (12-17 yrs) have a life changing opportunity to live, breathe their passion and perform in an original off-Broadway show. This seven day intensive helps participants learn important techniques, gives them vital experience, and most importantly, gives them a first-hand realization of the pressures and obstacles of performing in New York City. These kids, from diverse backgrounds, make life long friendships and come together with the same dream of making it on Broadway.<p><p><p>
 
 Directed by Kate Marks,
@@ -1804,26 +1727,6 @@ In THE CATERERS playwright Jonathan Leaf re-imagines these events in the present
  ', 'Classical');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('166', 'The Secret Rapture', 'By David hare, Directed by Jesse Berger', 'Sometimes an act of kindness can be destructive. When their father dies two estranged sisters, one virtuous and one pragmatic, are forced to put his affairs in order. Among the problems they encounter is their alcoholic step-mother. Manipulation, chaos, and sacrifice are all part of this account that comes to a violent end.  
 ', 'Drama');
-INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('167', 'Platinum Travel Club', 'By Franca Miraglia', ' NPT is pleased to announce the U.S. premiere of Platinum Travel Club by Franca Miraglia, a product of our Women''s Work Residency Project.  The production opens Tuesday, October 4th and runs through Saturday, October 22, 2005.  Performances are Tuesday – Saturday at 8:00pm, with a special performance on Monday, October 17th at 7:00pm. 
-	
-Platinum Travel Club is an erotic-thriller that explores one woman''s road from childhood loss to adult obsession. The abduction of her beautiful teenage sister (Caroline) leaves Sandie to survive a shattered family shrouded in deceit and denial.  Despite this tragedy, she doesn''t let anything get in the way of building a successful career – neither a neglectful mother nor a dominating father. Switching between past and present, the story unfolds against a backdrop of Sandie''s involvement in a business travelers'' sex club as she confronts the ghosts from her damaged childhood.
-
-Anne Beaumont directs the production, which features Christiane Amorosia, Andrew Platner, Joan Schumacher, Kevin G.Shinnick, Tony Neil, and Anne Winkles.
-
-PERFORMANCE INFORMATION
-
-WHERE:	New Perspectives Theatre Company
-750 8th Avenue (46th/47th Streets), 6th Fl.
-
-WHEN:		Tuesday, October 4, 2005 to Saturday, October 22, 2005
-		Tuesday – Saturday at 8:00pm
-		Special Performance: Monday, October 17, 2005, 7:00pm
-
-		Reservations:  212-730-2030; info@newperspectivestheatre.org
-	
-
-
-', 'Actor');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('168', 'Moma''s Boyz', 'by Caindido Tirado', 'Moma''s Boyz is a magical tale of three young men from the projects, Shine, Thug and Mimic, who become entangled in the drug life. One bad decision leads to the death of one of the young men. While at his funeral, one of his friends wishes that he could turn back time to the days when a big deal meant they had to ask their mothers for money, and a magical force intervenes turning time back to when they made the fateful decision to sell drugs. The strength and heart of Momma''s Boyz lies in the belief that people have the power to change their own lives. 
 
 The play is produced by the newly formed theatre company, Experimental Play Productions.', 'Actress');
@@ -1953,18 +1856,6 @@ There will be a special section of the pier for youngsters – where the action 
 ', 'Actor');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('196', 'The Holy Terror', 'Adapted and directed by Kevin Connell,', 'An adaptation of Shakespeare''s Richard II
 ', 'Producer');
-INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('197', 'Why We Have A Body', 'by Claire Chafee', 'WHY WE HAVE A BODY is a funny, lyrical play about two young women, Lili and her emotionally troubled sister, Mary, who ache for the return of their mother, Eleanor, who left home years ago to "get lost."  The play proceeds poetically through a collage of scenes in which the two sisters, their mother, and Lili''s new lover Renee, speak alternately to the audience and to each other, as they try to live with absence and great distance.  The women are taught few skills with which to navigate their lives, and in each case, the women''s chosen fields are a flight from traditional roles, propelled by a fear of getting stuck in a groove of routine.  The vast spaces that separate us from our past, from the ones we love, and from knowing ourselves constitute their landscape.  Through contrasts and contradictions, Chafee presents the struggle and search of these four women in a kaleidoscopic form, shifting space and time, as each character finds her own road signs to point the way.
-
-Director:  Valerie Davenport
-Stage Manager:  Meredith Kaufman
-Assistant Stage Manager:  Jessica Franz
-Lighting and Set Design:  Patrick Smith
-Sound Design:  Beau Edmondson
-
-Cast:  Laila Ayad* (Lili), Stefanie Black (Mary), Natasha Malinsky (Eleanor), Julie Lynn Stump (Renee)
-* Appears Courtesy of Actor''s Equity Association
-
-For more information please contact applegirlproductions@yahoo.com', 'Actor');
 INSERT INTO "theater"."plays" ("id", "act", "slug", "body", "genre") VALUES ('198', 'Last Day', 'by jesse Schmitt', 'does love even exist?  what is our role in today''s over-populated society to pair off and mate?  Last Day is a funny, touching piece set to the familiar tune of wedding bells and one couples confused, earnest attempt to live up to their present while honoring their past.
 
 Part of the Where Eagles Dare Fall Festival

@@ -22,6 +22,8 @@ const SKIP_TABLES = ['sendemail', 'photos', 'fompages'];
 // Rows kept out of the public seed (personal content), keyed by table name.
 const ROW_FILTERS = {
   widgets: 'id NOT IN (1, 14)',
+  // Press-release text with people's contact emails.
+  plays: "COALESCE(body, '') !~* '[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}'",
 };
 
 const ident = (s) => '"' + s.replace(/"/g, '""') + '"';
