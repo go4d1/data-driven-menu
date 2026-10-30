@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Menu Builder</title>
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+
+      #header {
+        background: white;
+        color: #2c3e50;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        border-bottom: 2px solid #2c3e50;
+      }
+      #header h2 {
+        font-size: 16px;
+        white-space: nowrap;
+        color: #2c3e50;
+      }
+      #colorlegend {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .legend-item {
+        padding: 2px 10px;
+        border: 1px dotted #888;
+        border-radius: 3px;
+        font-size: 15px;
+        font-weight: bold;
+        background: #eae6e6fd;
+      }
+
+      #layout {
+        display: flex;
+        height: calc(100vh - 46px);
+      }
+
+      #tree-panel {
+        width: 300px;
+        min-width: 220px;
+        border-right: 2px solid #ccc;
+        overflow-y: auto;
+        padding: 8px;
+        background: #f5f5f5;
+      }
+
+      #edit-panel {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: white;
+      }
+
+      /* Tree */
+      .tree-list {
+        list-style: none;
+        padding-left: 16px;
+      }
+      #tree-root > .tree-list {
+        padding-left: 0;
+      }
+      .tree-list li {
+        margin: 2px 0;
+      }
+      .node-row {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 3px 4px;
+        border-radius: 3px;
+      }
+      .node-row:hover {
+        background: #e3eaf8;
+      }
+      .drag-handle {
+        cursor: grab;
+        color: #999;
+        font-size: 16px;
+        font-weight: bold;
+        width: 16px;
+        flex-shrink: 0;
+        user-select: none;
+      }
+      .drag-handle:hover {
+        color: #333;
+      }
+      .drag-handle:active {
+        cursor: grabbing;
+      }
+      .toggle {
+        cursor: pointer;
+        font-size: 10px;
+        width: 14px;
+        text-align: center;
+        color: #888;
+        user-select: none;
+        flex-shrink: 0;
+      }
+      .node-link {
+        text-decoration: none;
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .node-link span {
+        font-weight: bold;
+      }
+      .node-link.active span {
+        text-decoration: underline;
+      }
+
+      /* Drag-drop */
+      .sort-line {
+        height: 3px;
+        background: #1976d2;
+        border-radius: 2px;
+        margin: 2px 0;
+        list-style: none;
+        position: relative;
+        pointer-events: none;
+      }
+      .sort-line::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: #1976d2;
+        border-radius: 50%;
+        position: absolute;
+        left: -5px;
+        top: -4px;
+      }
+      .drag-ghost {
+        background: #1976d2;
+        color: white;
+        padding: 5px 14px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: bold;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+      }
+      .being-dragged > .node-row {
+        opacity: 0.25;
+      }
+      .drop-highlight {
+        background: #1976d2 !important;
+        border-radius: 3px;
+      }
+      .drop-highlight .node-link span,
+      .drop-highlight .toggle {
+        color: white !important;
+      }
+
+      /* Edit form */
+      #node-title {
+        font-size: 17px;
+        font-weight: bold;
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+      }
+      #node-title small {
+        font-size: 12px;
+        color: #999;
+        font-weight: normal;
+      }
+      table.edit-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #eae6e6fd;
+      }
+      table.edit-table td {
+        padding: 5px 8px;
+        vertical-align: top;
+      }
+      table.edit-table td:first-child {
+        width: 120px;
+        font-weight: bold;
+        color: #555;
+        padding-top: 9px;
+        white-space: nowrap;
+      }
+      table.edit-table input[type='text'],
+      table.edit-table select {
+        width: 100%;
+        padding: 5px 7px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+      table.edit-table textarea {
+        width: 100%;
+        padding: 5px 7px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 12px;
+        resize: vertical;
+      }
+      .btn {
+        padding: 7px 18px;
+        margin-right: 8px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-top: 12px;
+      }
+      .btn-save {
+        background: #1976d2;
+        color: white;
+      }
+      .btn-save:hover {
+        background: #1565c0;
+      }
+      .btn-delete {
+        background: #e53935;
+        color: white;
+      }
+      .btn-delete:hover {
+        background: #c62828;
+      }
+      #form-status {
+        font-size: 13px;
+        margin-left: 10px;
+        vertical-align: middle;
+      }
+      .hint {
+        color: #999;
+        font-size: 11px;
+        margin-top: 3px;
+      }
+      .placeholder-msg {
+        color: #aaa;
+        margin-top: 30px;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <h2>Menu Builder</h2>
+      <div id="colorlegend"></div>
+    </div>
+    <div id="layout">
+      <div id="tree-panel">
+        <div id="tree-root">
+          <p style="color: #aaa; padding: 10px">Loading...</p>
+        </div>
+      </div>
+      <div id="edit-panel">
+        <p class="placeholder-msg">Click a menu item on the left to edit it.</p>
+      </div>
+    </div>
+
+    <script>
+      var settings = {};
+      var colorMap = {};
+
+      function esc(s) {
+        return (s || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function buildColorMap(s) {
+        colorMap = {};
+        (s.permissionLevels || []).forEach(function (p) {
+          colorMap[p.level] = p.color || 'black';
+        });
+      }
+
+      function buildLegend(s) {
+        var html = '';
+        (s.permissionLevels || []).slice().sort(function (a, b) {
+          return a.level - b.level;
+        }).forEach(function (p) {
+          html +=
+            '<span class="legend-item" style="color:' +
+            (p.color || 'black') +
+            '">' +
+            esc(p.label) +
+            ' (' +
+            p.level +
+            ')</span>';
+        });
+        $('#colorlegend').html(html);
+      }
+
+      function buildTree(items, parentpk) {
+        var children = items
+          .filter(function (i) {
+            return i.parentpk == parentpk;
+          })
+          .sort(function (a, b) {
+            return a.isort - b.isort;
+          });
+        if (!children.length) return '';
+        var html = '<ul class="tree-list">';
+        children.forEach(function (item) {
+          var color = colorMap[item.ilevel] || 'black';
+          var childUL = buildTree(items, item.pk);
+          html += '<li id="node-' + item.pk + '" data-pk="' + item.pk + '">';
+          html += '<div class="node-row">';
+          html += '<span class="drag-handle">⠿</span>';
+          if (childUL) {
+            html += '<span class="toggle" data-pk="' + item.pk + '">▶</span>';
+          } else {
+            html += '<span class="toggle">&nbsp;</span>';
+          }
+          html += '<a href="#" class="node-link" data-pk="' + item.pk + '">';
+          html +=
+            '<span style="color:' +
+            color +
+            '">' +
+            esc(item.cprompt) +
+            '</span></a>';
+          html += '</div>';
+          if (childUL) {
+            html += childUL.replace(
+              '<ul class="tree-list">',
+              '<ul class="tree-list" style="display:none">',
+            );
+          }
+          html += '</li>';
+        });
+        html += '</ul>';
+        return html;
+      }
+
+      var $dropLine = $('<li class="sort-line"></li>');
+      var $dropHighlight = null;
+      var dropAction = null;
+
+      function clearIndicators() {
+        $dropLine.detach();
+        if ($dropHighlight) {
+          $dropHighlight.removeClass('drop-highlight');
+          $dropHighlight = null;
+        }
+      }
+
+      function getOpenNodes() {
+        var open = [];
+        $('.toggle[data-pk]').each(function () {
+          if ($(this).text() === '▼') open.push($(this).data('pk'));
+        });
+        return open;
+      }
+
+      function restoreOpenNodes(open) {
+        open.forEach(function (pk) {
+          var $toggle = $('.toggle[data-pk="' + pk + '"]');
+          if ($toggle.length) {
+            $('#node-' + pk + ' > ul').show();
+            $toggle.text('▼');
+          }
+        });
+      }
+
+      function reloadTree() {
+        var open = getOpenNodes();
+        $.getJSON('/getMenuBuilderData', function (items) {
+          settings._allItems = items.slice().sort(function (a, b) {
+            return (a.cprompt || '').localeCompare(b.cprompt || '');
+          });
+          $('#tree-root').html(buildTree(items, 0) || '');
+          restoreOpenNodes(open);
+          initDrag();
+        });
+      }
+
+      function initDrag() {
+        $('li[data-pk]').each(function () {
+          if ($(this).data('ui-draggable')) $(this).draggable('destroy');
+        });
+
+        $('li[data-pk]').draggable({
+          handle: '.drag-handle',
+          helper: function () {
+            return $(
+              '<div class="drag-ghost">' +
+                $(this).find('.node-link span').first().text() +
+                '</div>',
+            );
+          },
+          appendTo: 'body',
+          cursor: 'grabbing',
+          cursorAt: { top: 14, left: 14 },
+          distance: 8,
+          zIndex: 9999,
+          start: function () {
+            $(this).addClass('being-dragged');
+            dropAction = null;
+          },
+          drag: function (e, ui) {
+            var selfPk = parseInt($(this).data('pk'));
+
+            // Temporarily hide helper to detect element under cursor
+            ui.helper[0].style.visibility = 'hidden';
+            var elem = document.elementFromPoint(e.clientX, e.clientY);
+            ui.helper[0].style.visibility = '';
+
+            clearIndicators();
+            if (!elem) return;
+
+            var $nodeRow = $(elem).closest('.node-row');
+            if (!$nodeRow.length) return;
+            var $targetLI = $nodeRow.closest('li[data-pk]');
+            if (!$targetLI.length) return;
+
+            var targetPk = parseInt($targetLI.data('pk'));
+            if (targetPk === selfPk) return;
+            // Don't allow drop into own subtree
+            if ($targetLI.closest('#node-' + selfPk).length) return;
+
+            var rect = $nodeRow[0].getBoundingClientRect();
+            var relY = e.clientY - rect.top;
+            var h = rect.height;
+            var $parentLI = $targetLI.parent().closest('li[data-pk]');
+            var parentPk = $parentLI.length
+              ? parseInt($parentLI.data('pk'))
+              : 0;
+
+            if (relY < h * 0.3) {
+              // Insert before target
+              $dropLine.insertBefore($targetLI);
+              dropAction = {
+                mode: 'before',
+                child: selfPk,
+                parent: parentPk,
+                previous: $targetLI.prev('li[data-pk]').data('pk') || null,
+                $ref: $targetLI,
+              };
+            } else if (relY > h * 0.7) {
+              // Insert after target
+              $dropLine.insertAfter($targetLI);
+              dropAction = {
+                mode: 'after',
+                child: selfPk,
+                parent: parentPk,
+                previous: targetPk,
+                $ref: $targetLI,
+              };
+            } else {
+              // Make child of target
+              $nodeRow.addClass('drop-highlight');
+              $dropHighlight = $nodeRow;
+              dropAction = {
+                mode: 'child',
+                child: selfPk,
+                parent: targetPk,
+                previous: null,
+              };
+            }
+          },
+          stop: function () {
+            var $self = $(this);
+            $self.removeClass('being-dragged');
+            clearIndicators();
+            if (!dropAction) return;
+
+            var action = dropAction;
+            dropAction = null;
+
+            if (action.mode === 'child') {
+              // Structural change — reload tree after save
+              $.ajax({
+                url: '/moveMenuNode',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                  child: action.child,
+                  parent: action.parent,
+                  previous: null,
+                }),
+                success: function () {
+                  reloadTree();
+                },
+                error: function () {
+                  alert('Move failed.');
+                  reloadTree();
+                },
+              });
+            } else {
+              // Reorder — move DOM in place, no reload needed
+              if (action.mode === 'before') action.$ref.before($self);
+              else action.$ref.after($self);
+              $.ajax({
+                url: '/moveMenuNode',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                  child: action.child,
+                  parent: action.parent,
+                  previous: action.previous,
+                }),
+                error: function () {
+                  $('#tree-panel').prepend(
+                    '<p style="color:red;padding:6px;background:#fff3f3;border-bottom:1px solid #fcc">Move failed — reload the page.</p>',
+                  );
+                },
+              });
+            }
+          },
+        });
+      }
+
+      $(document).on('click', '.toggle', function (e) {
+        e.preventDefault();
+        var pk = $(this).data('pk');
+        var childUL = $('#node-' + pk + ' > ul');
+        if (childUL.is(':visible')) {
+          childUL.hide();
+          $(this).text('▶');
+        } else {
+          childUL.show();
+          $(this).text('▼');
+        }
+      });
+
+      $(document).on('click', '.node-link', function (e) {
+        e.preventDefault();
+        $('.node-link').removeClass('active');
+        $(this).addClass('active');
+        loadForm(parseInt($(this).data('pk')));
+      });
+
+      function loadForm(pk) {
+        $('#edit-panel').html(
+          '<p style="color:#aaa;margin-top:20px">Loading...</p>',
+        );
+        $.getJSON('/fetchMenuNode?id=' + pk, function (node) {
+          var levelOptions = (settings.permissionLevels || [])
+            .map(function (p) {
+              return (
+                '<option value="' +
+                p.level +
+                '"' +
+                (p.level == node.ilevel ? ' selected' : '') +
+                '>' +
+                esc(p.label) +
+                '</option>'
+              );
+            })
+            .join('');
+
+          var jqOptions = [
+            { v: 'fom-lc', l: 'fom-lc (load in container)' },
+            { v: 'fom_blank', l: 'fom_blank (open new tab)' },
+          ]
+            .map(function (o) {
+              return (
+                '<option value="' +
+                o.v +
+                '"' +
+                (node.jqclass == o.v ? ' selected' : '') +
+                '>' +
+                o.l +
+                '</option>'
+              );
+            })
+            .join('');
+
+          // Build parent options from all items (excluding self and own descendants)
+          var parentOptions = '<option value="0">(Top level)</option>';
+          (settings._allItems || []).forEach(function (item) {
+            if (item.pk == pk) return;
+            parentOptions +=
+              '<option value="' +
+              item.pk +
+              '"' +
+              (item.pk == node.parentpk ? ' selected' : '') +
+              '>' +
+              esc(item.cprompt) +
+              ' [pk=' +
+              item.pk +
+              ']</option>';
+          });
+
+          var html =
+            '<div id="node-title">' +
+            esc(node.cprompt) +
+            ' <small>pk=' +
+            node.pk +
+            '</small></div>';
+          html += '<table class="edit-table">';
+          html +=
+            '<tr><td>Label</td><td><input type="text" id="f-cprompt" value="' +
+            esc(node.cprompt) +
+            '"></td></tr>';
+          // html +=
+          //   '<tr><td>Parent</td><td><select id="f-parentpk">' +
+          //   parentOptions +
+          //   '</select></td></tr>';
+          html +=
+            '<tr><td>Permission Level</td><td><select id="f-ilevel">' +
+            levelOptions +
+            '</select></td></tr>';
+          var roleBoxes = (settings.roles || [])
+            .map(function (r) {
+              var chk =
+                (node.crole || '').indexOf(r.code) >= 0 ? ' checked' : '';
+              return (
+                '<label style="margin-right:14px;cursor:pointer"><input type="checkbox" class="role-check" value="' +
+                r.code +
+                '"' +
+                chk +
+                '> ' +
+                esc(r.label) +
+                '</label>'
+              );
+            })
+            .join('');
+          html += '<tr><td>Roles</td><td>' + roleBoxes + '</td></tr>';
+
+          // Check if this node is a leaf (has no children)
+          var isLeaf = !settings._allItems.some(function (item) {
+            return item.parentpk === node.pk;
+          });
+
+          // Only show these fields for leaf nodes
+          if (isLeaf) {
+            html +=
+              '<tr><td>jqClass</td><td><select id="f-jqclass">' +
+              jqOptions +
+              '</select></td></tr>';
+            html +=
+              '<tr><td>HREF</td><td>' +
+              '<input type="text" id="f-chref" value="' +
+              esc(node.chref) +
+              '" style="width:40%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Private &nbsp;' +
+              '<input type="text" id="f-private" value="' +
+              esc(node.private) +
+              '" placeholder="filename.htm — TENANT_FILES_DIR/&lt;prefix&gt;/" style="width:40%">' +
+              '</td></tr>';
+            html +=
+              '<tr><td>Function</td><td><input type="text" id="f-cfunction" value="' +
+              esc(node.cfunction) +
+              '"></td></tr>';
+            html +=
+              '<tr><td>HTML</td><td><textarea id="f-chtml" rows="5">' +
+              esc(node.chtml) +
+              '</textarea></td></tr>';
+            html +=
+              '<tr><td>JavaScript</td><td><textarea id="f-jscript" rows="5">' +
+              esc(node.jscript) +
+              '</textarea></td></tr>';
+          }
+          html += '</table>';
+          html += '<button class="btn btn-save" id="btn-save">Save</button>';
+          html +=
+            '<button class="btn btn-delete" id="btn-delete">Delete</button>';
+          html += '<span id="form-status"></span>';
+          html +=
+            '<div style="margin-top:18px;padding-top:12px;border-top:1px solid #eee">';
+          html +=
+            '<strong style="font-size:13px">Add Node</strong>&nbsp;&nbsp;';
+          html +=
+            '<input type="text" id="new-node-label" placeholder="Label" style="width:180px;padding:4px 7px;border:1px solid #ccc;border-radius:3px;font-size:13px">&nbsp;';
+          html +=
+            '<button class="btn btn-save" id="btn-add-child" style="padding:5px 12px">Add Child</button>';
+          html +=
+            '<button class="btn" id="btn-add-sibling" style="padding:5px 12px;background:#607D8B;color:white">Add Sibling</button>';
+          html +=
+            '<span id="add-node-status" style="margin-left:8px;font-size:13px"></span>';
+          html += '</div>';
+          $('#edit-panel').html(html);
+
+          $('#btn-save').click(function () {
+            var parentEl = $('#f-parentpk');
+            var newParent = parentEl.length
+              ? parseInt(parentEl.val(), 10)
+              : node.parentpk;
+            var data = {
+              pk: pk,
+              cprompt: $('#f-cprompt').val(),
+              parentpk: newParent,
+              ilevel: parseInt($('#f-ilevel').val(), 10),
+              crole: $('.role-check:checked')
+                .map(function () {
+                  return this.value;
+                })
+                .get()
+                .join(''),
+              jqclass: $('#f-jqclass').val(),
+              chref: $('#f-chref').val(),
+              private: $('#f-private').val(),
+              cfunction: $('#f-cfunction').val(),
+              chtml: $('#f-chtml').val(),
+              jscript: $('#f-jscript').val(),
+            };
+            $.ajax({
+              url: '/updateMenuNode',
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(data),
+              success: function () {
+                $('#form-status').text('Saved').css('color', 'green');
+                setTimeout(function () {
+                  $('#form-status').text('');
+                }, 2000);
+                if (newParent !== node.parentpk) {
+                  // Parent changed — must rebuild tree
+                  reloadTree();
+                } else {
+                  // Update label and color in-place, tree stays expanded
+                  var newColor = colorMap[data.ilevel] || 'black';
+                  $('#node-' + pk + ' > .node-row .node-link span')
+                    .text(data.cprompt)
+                    .css('color', newColor);
+                  $('#node-title').html(
+                    esc(data.cprompt) + ' <small>pk=' + pk + '</small>',
+                  );
+                }
+              },
+              error: function () {
+                $('#form-status').text('Save failed').css('color', 'red');
+              },
+            });
+          });
+
+          $('#btn-add-child').click(function () {
+            addNode(pk, node.pk);
+          });
+          $('#btn-add-sibling').click(function () {
+            addNode(pk, node.parentpk);
+          });
+
+          $('#btn-delete').click(function () {
+            var descendantCount = $('#node-' + pk).find('li').length;
+            var msg =
+              'Delete "' +
+              node.cprompt +
+              '"' +
+              (descendantCount
+                ? ' and all ' + descendantCount + ' descendant(s)?'
+                : '?') +
+              '\nThis cannot be undone.';
+            if (!confirm(msg)) return;
+            $.ajax({
+              url: '/deleteMenuNode',
+              method: 'POST',
+              contentType: 'application/json',
+              dataType: 'json',
+              data: JSON.stringify({ pk: pk }),
+              success: function (data) {
+                $('#node-' + pk).remove();
+                var deleted = (data && data.deleted) || 1;
+                $('#edit-panel').html(
+                  '<p class="placeholder-msg">Deleted ' +
+                    deleted +
+                    ' item(s).</p>',
+                );
+              },
+              error: function (xhr) {
+                var msg =
+                  (xhr.responseJSON && xhr.responseJSON.error) ||
+                  'Delete failed';
+                $('#form-status').text(msg).css('color', 'red');
+              },
+            });
+          });
+        });
+      }
+
+      function addNode(activePk, parentpk) {
+        var label = $('#new-node-label').val().trim();
+        if (!label) {
+          $('#add-node-status').text('Enter a label').css('color', 'red');
+          return;
+        }
+        $.ajax({
+          url: '/addMenuNode',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ parentpk: parentpk, cprompt: label }),
+          success: function (res) {
+            $('#add-node-status').text('Added').css('color', 'green');
+            $('#new-node-label').val('');
+            var open = getOpenNodes();
+            $.getJSON('/getMenuBuilderData', function (items) {
+              settings._allItems = items.slice().sort(function (a, b) {
+                return (a.cprompt || '').localeCompare(b.cprompt || '');
+              });
+              $('#tree-root').html(buildTree(items, 0) || '');
+              restoreOpenNodes(open);
+              initDrag();
+              loadForm(res.pk);
+              $('#node-' + res.pk + ' > .node-row .node-link').addClass(
+                'active',
+              );
+            });
+          },
+          error: function () {
+            $('#add-node-status').text('Failed').css('color', 'red');
+          },
+        });
+      }
+
+      // Init: load settings and menu data in parallel
+      $.when($.getJSON('/getSettings'), $.getJSON('/getMenuBuilderData'))
+        .done(function (s, m) {
+          settings = s[0];
+          var items = m[0];
+          settings._allItems = items.slice().sort(function (a, b) {
+            return (a.cprompt || '').localeCompare(b.cprompt || '');
+          });
+          buildColorMap(settings);
+          buildLegend(settings);
+          var treeHTML = buildTree(items, 0);
+          $('#tree-root').html(
+            treeHTML ||
+              '<p style="color:#aaa;padding:10px">No menu items found.</p>',
+          );
+          initDrag();
+        })
+        .fail(function () {
+          $('#tree-root').html(
+            '<p style="color:red;padding:10px">Failed to load menu data.</p>',
+          );
+        });
+    </script>
+  </body>
+</html>

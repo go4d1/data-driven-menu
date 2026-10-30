@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>fomMenu - Tree View</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+
+      h1 {
+        margin-bottom: 16px;
+        font-size: 18px;
+        color: #2c3e50;
+      }
+
+      #flyoutmenu,
+      #flyoutmenu ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      #flyoutmenu ul {
+        padding-left: 20px;
+        display: none;
+      }
+
+      #flyoutmenu li {
+        position: relative;
+        padding-left: 20px;
+        line-height: 28px;
+      }
+
+      /* Vertical line */
+      #flyoutmenu li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border-left: 1px solid #aaa;
+      }
+
+      /* Horizontal branch line */
+      #flyoutmenu li::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 14px;
+        width: 14px;
+        border-top: 1px solid #aaa;
+      }
+
+      /* Remove vertical line on last child */
+      #flyoutmenu li:last-child::before {
+        height: 14px;
+      }
+
+      /* Toggle arrow for parent nodes */
+      #flyoutmenu li.has-children > a.toggle::before {
+        content: '▶ ';
+        font-size: 10px;
+        color: #555;
+      }
+
+      #flyoutmenu li.has-children.open > a.toggle::before {
+        content: '▼ ';
+      }
+
+      #flyoutmenu li.has-children.open > ul {
+        display: block;
+      }
+
+      #flyoutmenu a {
+        text-decoration: none;
+        color: #2c3e50;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+
+      #flyoutmenu a:hover {
+        background: #dce9f5;
+        color: #1a252f;
+      }
+
+      #flyoutmenu span {
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Tree View Menu</h1>
+    <h2>Love this stuff</h2>
+    <div id="menu-container">Loading...</div>
+
+    <script>
+      fetch('/getMenu?_=' + Date.now())
+        .then((res) => res.text())
+        .then((html) => {
+          const container = document.getElementById('menu-container');
+          container.innerHTML = html;
+
+          // Mark parent nodes and add toggle behaviour
+          container.querySelectorAll('#flyoutmenu li').forEach((li) => {
+            if (li.querySelector(':scope > ul')) {
+              li.classList.add('has-children');
+              const link = li.querySelector(':scope > a');
+              if (link) {
+                link.classList.add('toggle');
+                link.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  li.classList.toggle('open');
+                });
+              }
+            }
+          });
+        })
+        .catch((err) => {
+          document.getElementById('menu-container').textContent =
+            'Failed to load menu: ' + err.message;
+        });
+    </script>
+  </body>
+</html>

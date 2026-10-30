@@ -1,0 +1,332 @@
+<style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        margin: 0;
+        padding: 12px;
+        background: #f4f6f8;
+      }
+      h3 {
+        margin: 0 0 10px;
+        color: #2c3e50;
+        font-size: 16px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      select,
+      input[type='text'] {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 13px;
+        min-width: 280px;
+      }
+      button {
+        padding: 6px 16px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+        color: white;
+      }
+      .btn-primary {
+        background: #1976d2;
+      }
+      .btn-primary:hover {
+        background: #1256a0;
+      }
+      .btn-secondary {
+        background: #607d8b;
+      }
+      .btn-danger {
+        background: #c62828;
+      }
+      .btn-danger:hover {
+        background: #8e1818;
+      }
+      .btn-success {
+        background: #2e7d32;
+      }
+      .btn-success:hover {
+        background: #1b5e20;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      #count {
+        font-weight: bold;
+        color: #2e7d32;
+      }
+      .panel {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      #preview {
+        min-height: 120px;
+        max-height: 280px;
+        overflow: auto;
+        background: #fafafa;
+        padding: 10px;
+        border: 1px dashed #bbb;
+        border-radius: 4px;
+      }
+      #recipients-table {
+        border-collapse: collapse;
+        width: 100%;
+        background: white;
+      }
+      #recipients-table th {
+        background: #2c3e50;
+        color: white;
+        padding: 6px 10px;
+        border: 1px solid #1a252f;
+        text-align: left;
+      }
+      #recipients-table td {
+        padding: 4px 10px;
+        border: 1px solid #ddd;
+      }
+      #recipients-table tbody tr:nth-child(even) {
+        background: #f5f7fa;
+      }
+      #status {
+        font-size: 12px;
+        color: #666;
+      }
+      .err {
+        color: #c62828;
+      }
+      .ok {
+        color: #2e7d32;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+
+<h3>Send Email — Saved Queries</h3>
+
+    <div class="row">
+      <label for="campaign">Campaign:</label>
+      <select id="campaign">
+        <option value="">— pick a campaign —</option>
+      </select>
+      <button class="btn-primary" id="btn-load" disabled>
+        Load Recipients
+      </button>
+      <span id="status"></span>
+    </div>
+
+    <div id="result-section" class="hidden">
+      <div class="row">
+        <span><span id="count">0</span> recipients have been selected</span>
+        <button class="btn-secondary" id="btn-view-list">View list</button>
+        <button class="btn-secondary" id="btn-test">Send Test</button>
+      </div>
+
+      <div class="panel">
+        <div style="font-weight: bold; margin-bottom: 6px">
+          Preview (using first recipient):
+        </div>
+        <div id="preview"></div>
+      </div>
+
+      <div id="list-panel" class="panel hidden">
+        <div class="row">
+          <button class="btn-secondary" id="btn-check-all">Check All</button>
+          <button class="btn-secondary" id="btn-check-none">Check None</button>
+          <span id="checked-count"></span>
+        </div>
+        <div style="max-height: 300px; overflow: auto">
+          <table id="recipients-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn-danger" id="btn-cancel">Cancel</button>
+        <button class="btn-success" id="btn-transmit">Transmit</button>
+      </div>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      let lastRows = [];
+      let currentCampaignId = null;
+
+      const setStatus = (msg, cls = '') => {
+        const el = $('status');
+        el.textContent = msg;
+        el.className = cls;
+      };
+
+      async function loadCampaigns() {
+        const r = await fetch('/api/sendemail/list?qtype=saved');
+        const list = await r.json();
+        const sel = $('campaign');
+        sel.innerHTML = '<option value="">— pick a campaign —</option>';
+        for (const c of list) {
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.name;
+          sel.appendChild(opt);
+        }
+      }
+
+      async function loadRecipients() {
+        const id = $('campaign').value;
+        if (!id) return;
+        currentCampaignId = id;
+        setStatus('Running query…');
+        $('result-section').classList.add('hidden');
+        const r = await fetch('/api/sendemail/recipients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        const data = await r.json();
+        if (data.error) {
+          setStatus(data.error, 'err');
+          return;
+        }
+        lastRows = data.rows;
+        $('count').textContent = data.count;
+        $('preview').innerHTML =
+          data.preview || '<i>(no recipients — preview empty)</i>';
+        $('result-section').classList.remove('hidden');
+        $('list-panel').classList.add('hidden');
+        setStatus('');
+      }
+
+      function renderList() {
+        const cols = lastRows.length ? Object.keys(lastRows[0]) : ['email'];
+        const thead =
+          '<tr><th><input type="checkbox" id="hdr-check" checked></th>' +
+          cols.map((c) => `<th>${c}</th>`).join('') +
+          '</tr>';
+        const tbody = lastRows
+          .map(
+            (row, i) =>
+              `<tr><td><input type="checkbox" class="rcpt" data-email="${row.email}" checked></td>` +
+              cols
+                .map(
+                  (c) =>
+                    `<td>${row[c] == null ? '' : String(row[c]).replace(/[<>&]/g, (s) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[s])}</td>`,
+                )
+                .join('') +
+              '</tr>',
+          )
+          .join('');
+        $('recipients-table').querySelector('thead').innerHTML = thead;
+        $('recipients-table').querySelector('tbody').innerHTML = tbody;
+        $('hdr-check').addEventListener('change', (e) => {
+          document
+            .querySelectorAll('.rcpt')
+            .forEach((cb) => (cb.checked = e.target.checked));
+          updateCheckedCount();
+        });
+        document
+          .querySelectorAll('.rcpt')
+          .forEach((cb) => cb.addEventListener('change', updateCheckedCount));
+        updateCheckedCount();
+      }
+
+      function updateCheckedCount() {
+        const n = document.querySelectorAll('.rcpt:checked').length;
+        $('checked-count').textContent = `${n} of ${lastRows.length} checked`;
+      }
+
+      function getCheckedEmails() {
+        return Array.from(document.querySelectorAll('.rcpt:checked')).map(
+          (cb) => cb.dataset.email,
+        );
+      }
+
+      $('campaign').addEventListener('change', () => {
+        $('btn-load').disabled = !$('campaign').value;
+      });
+      $('btn-load').addEventListener('click', loadRecipients);
+
+      $('btn-view-list').addEventListener('click', () => {
+        renderList();
+        $('list-panel').classList.remove('hidden');
+      });
+
+      $('btn-check-all').addEventListener('click', () => {
+        document.querySelectorAll('.rcpt').forEach((cb) => (cb.checked = true));
+        $('hdr-check').checked = true;
+        updateCheckedCount();
+      });
+      $('btn-check-none').addEventListener('click', () => {
+        document
+          .querySelectorAll('.rcpt')
+          .forEach((cb) => (cb.checked = false));
+        $('hdr-check').checked = false;
+        updateCheckedCount();
+      });
+
+      $('btn-test').addEventListener('click', async () => {
+        setStatus('Sending test…');
+        const r = await fetch('/api/sendemail/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: currentCampaignId }),
+        });
+        const data = await r.json();
+        setStatus(
+          data.error ? data.error : `Test sent to ${data.sentTo}`,
+          data.error ? 'err' : 'ok',
+        );
+      });
+
+      $('btn-cancel').addEventListener('click', () => {
+        $('result-section').classList.add('hidden');
+        $('campaign').value = '';
+        $('btn-load').disabled = true;
+        setStatus('Canceled.');
+      });
+
+      $('btn-transmit').addEventListener('click', async () => {
+        const emails = $('list-panel').classList.contains('hidden')
+          ? lastRows.map((r) => r.email)
+          : getCheckedEmails();
+        if (!emails.length) {
+          setStatus('No recipients selected.', 'err');
+          return;
+        }
+        if (!confirm(`Send to ${emails.length} recipient(s)?`)) return;
+        setStatus('Transmitting…');
+        const r = await fetch('/api/sendemail/transmit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: currentCampaignId, emails }),
+        });
+        const data = await r.json();
+        if (data.error) {
+          setStatus(data.error, 'err');
+          return;
+        }
+        setStatus(
+          `Sent ${data.sent} of ${data.attempted}` +
+            (data.errors.length ? ` — ${data.errors.length} failures` : ''),
+          'ok',
+        );
+      });
+
+      loadCampaigns();
+    </script>

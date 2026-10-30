@@ -1,0 +1,19 @@
+{
+  "name": "node-scaffold",
+  "version": "1.0.0",
+  "description": "A basic Node.js project scaffold",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "nodemailer": "^8.0.7",
+    "pg": "^8.20.0",
+    "sharp": "^0.34.5"
+  }
+}

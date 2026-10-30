@@ -1,0 +1,195 @@
+<div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px">
+  <h2 style="margin-top: 0; color: #2c3e50">Upload Photos</h2>
+
+  <form id="uploadPhotosForm" enctype="multipart/form-data">
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoTitle"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Title</label
+      >
+      <input
+        type="text"
+        id="photoTitle"
+        name="title"
+        maxlength="100"
+        required
+        style="
+          width: 100%;
+          padding: 6px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-sizing: border-box;
+        "
+      />
+    </div>
+
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoCaption"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Caption</label
+      >
+      <textarea
+        id="photoCaption"
+        name="caption"
+        rows="3"
+        style="
+          width: 100%;
+          padding: 6px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-sizing: border-box;
+          resize: vertical;
+        "
+      ></textarea>
+    </div>
+
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoGroup"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Group</label
+      >
+      <input
+        type="number"
+        id="photoGroup"
+        name="igroup"
+        value="0"
+        style="
+          width: 120px;
+          padding: 6px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+        "
+      />
+    </div>
+
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoFiles"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Photos</label
+      >
+      <input
+        type="file"
+        id="photoFiles"
+        name="photos"
+        accept="image/*"
+        multiple
+        required
+        style="display: block"
+      />
+      <div style="color: #888; font-size: 12px; margin-top: 4px">
+        Select one or more image files (JPG, PNG, GIF, WebP)
+      </div>
+    </div>
+
+    <div
+      id="photoPreview"
+      style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px"
+    ></div>
+
+    <div style="display: flex; gap: 8px">
+      <button
+        type="submit"
+        style="
+          padding: 8px 18px;
+          background: #2c3e50;
+          color: white;
+          border: none;
+          border-radius: 3px;
+          cursor: pointer;
+          font-weight: bold;
+        "
+      >
+        Upload
+      </button>
+      <button
+        type="reset"
+        style="
+          padding: 8px 18px;
+          background: #eee;
+          color: #333;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          cursor: pointer;
+        "
+      >
+        Clear
+      </button>
+    </div>
+
+    <div
+      id="uploadPhotosStatus"
+      style="margin-top: 14px; font-size: 13px"
+    ></div>
+  </form>
+</div>
+
+<script>
+  (function () {
+    var form = document.getElementById('uploadPhotosForm');
+    var fileInput = document.getElementById('photoFiles');
+    var preview = document.getElementById('photoPreview');
+    var statusEl = document.getElementById('uploadPhotosStatus');
+
+    fileInput.addEventListener('change', function () {
+      preview.innerHTML = '';
+      Array.from(fileInput.files).forEach(function (f) {
+        if (!f.type.startsWith('image/')) return;
+        var url = URL.createObjectURL(f);
+        var img = document.createElement('img');
+        img.src = url;
+        img.title = f.name + ' (' + Math.round(f.size / 1024) + ' KB)';
+        img.style.cssText =
+          'width:90px;height:90px;object-fit:cover;border:1px solid #ccc;border-radius:3px';
+        preview.appendChild(img);
+      });
+    });
+
+    form.addEventListener('reset', function () {
+      preview.innerHTML = '';
+      statusEl.textContent = '';
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!fileInput.files.length) {
+        statusEl.style.color = '#c0392b';
+        statusEl.textContent = 'Please select at least one photo.';
+        return;
+      }
+      var fd = new FormData(form);
+      statusEl.style.color = '#888';
+      statusEl.textContent =
+        'Uploading ' + fileInput.files.length + ' file(s)…';
+
+      fetch('/uploadPhotos', { method: 'POST', body: fd })
+        .then(function (r) {
+          return r.json().catch(function () {
+            return { ok: r.ok };
+          });
+        })
+        .then(function (data) {
+          if (data && data.ok !== false) {
+            statusEl.style.color = '#27ae60';
+            statusEl.textContent =
+              'Uploaded ' +
+              (data.count || fileInput.files.length) +
+              ' photo(s) successfully.';
+            form.reset();
+            preview.innerHTML = '';
+          } else {
+            statusEl.style.color = '#c0392b';
+            statusEl.textContent =
+              'Upload failed' + (data && data.error ? ': ' + data.error : '.');
+          }
+        })
+        .catch(function (err) {
+          statusEl.style.color = '#c0392b';
+          statusEl.textContent = 'Upload error: ' + err.message;
+        });
+    });
+  })();
+</script>

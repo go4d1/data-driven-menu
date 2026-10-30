@@ -1,0 +1,128 @@
+<div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px">
+  <h2 style="margin-top: 0; color: #2c3e50">Upload Photos</h2>
+
+  <form id="uploadPhotosForm" enctype="multipart/form-data">
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoTitle"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Title</label
+      >
+      <input
+        type="text"
+        id="photoTitle"
+        name="title"
+        maxlength="100"
+        required
+        style="
+          width: 100%;
+          padding: 6px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-sizing: border-box;
+        "
+      />
+    </div>
+
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoCaption"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Caption</label
+      >
+      <textarea
+        id="photoCaption"
+        name="caption"
+        rows="3"
+        style="
+          width: 100%;
+          padding: 6px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-sizing: border-box;
+          resize: vertical;
+        "
+      ></textarea>
+    </div>
+
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoGroup"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Group</label
+      >
+      <input
+        type="number"
+        id="photoGroup"
+        name="igroup"
+        value="0"
+        style="
+          width: 120px;
+          padding: 6px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+        "
+      />
+    </div>
+
+    <div style="margin-bottom: 14px">
+      <label
+        for="photoFiles"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Photos</label
+      >
+      <input
+        type="file"
+        id="photoFiles"
+        name="photos"
+        accept="image/*"
+        multiple
+        required
+        style="display: block"
+      />
+      <div style="color: #888; font-size: 12px; margin-top: 4px">
+        Select one or more image files (JPG, PNG, GIF, WebP)
+      </div>
+    </div>
+
+    <div
+      id="photoPreview"
+      style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px"
+    ></div>
+
+    <div style="display: flex; gap: 8px">
+      <button
+        type="submit"
+        style="
+          padding: 8px 18px;
+          background: #2c3e50;
+          color: white;
+          border: none;
+          border-radius: 3px;
+          cursor: pointer;
+          font-weight: bold;
+        "
+      >
+        Upload
+      </button>
+      <button
+        type="reset"
+        style="
+          padding: 8px 18px;
+          background: #eee;
+          color: #333;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          cursor: pointer;
+        "
+      >
+        Clear
+      </button>
+    </div>
+
+    <div
+      id="uploadPhotosStatus"
+      style="margin-top: 14px; font-size: 13px"
+    ></div>
+  </form>
+</div>

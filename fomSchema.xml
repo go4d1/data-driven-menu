@@ -1,0 +1,1494 @@
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<xdoc>
+<Schema xmlns="urn:schemas-microsoft-com:xml-data" xmlns:dt="urn:schemas-microsoft-com:datatypes" name="Schema">
+<ElementType name="cxml" content="eltOnly" model="closed" order="many">
+<element type="row"/>
+</ElementType>
+<ElementType name="row" content="eltOnly" model="closed" order="many">
+<element type="pk"/>
+<element type="parentpk"/>
+<element type="cprompt"/>
+<element type="chref"/>
+<element type="cfunction"/>
+<element type="isort"/>
+<element type="ilevel"/>
+<element type="crole"/>
+<element type="objective"/>
+<element type="cexec"/>
+<element type="jscript"/>
+<element type="lparent"/>
+<element type="chtml"/>
+<element type="jqclass"/>
+<element type="class"/>
+</ElementType>
+<ElementType name="pk" content="textOnly" model="closed" dt:type="i4">
+<AttributeType name="type"/>
+<attribute type="type" default="i4"/>
+<AttributeType name="size"/>
+<attribute type="size" default="4"/>
+</ElementType>
+<ElementType name="parentpk" content="textOnly" model="closed" dt:type="i4">
+<AttributeType name="type"/>
+<attribute type="type" default="i4"/>
+<AttributeType name="size"/>
+<attribute type="size" default="4"/>
+</ElementType>
+<ElementType name="cprompt" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="60"/>
+</ElementType>
+<ElementType name="chref" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="60"/>
+</ElementType>
+<ElementType name="cfunction" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="120"/>
+</ElementType>
+<ElementType name="isort" content="textOnly" model="closed" dt:type="i4">
+<AttributeType name="type"/>
+<attribute type="type" default="i4"/>
+<AttributeType name="size"/>
+<attribute type="size" default="4"/>
+</ElementType>
+<ElementType name="ilevel" content="textOnly" model="closed" dt:type="i4">
+<AttributeType name="type"/>
+<attribute type="type" default="i4"/>
+<AttributeType name="size"/>
+<attribute type="size" default="4"/>
+</ElementType>
+<ElementType name="crole" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="10"/>
+</ElementType>
+<ElementType name="objective" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="2147483647"/>
+</ElementType>
+<ElementType name="cexec" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="2147483647"/>
+</ElementType>
+<ElementType name="jscript" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="2147483647"/>
+</ElementType>
+<ElementType name="lparent" content="textOnly" model="closed" dt:type="boolean">
+<AttributeType name="type"/>
+<attribute type="type" default="boolean"/>
+<AttributeType name="size"/>
+<attribute type="size" default="1"/>
+</ElementType>
+<ElementType name="chtml" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="2147483647"/>
+</ElementType>
+<ElementType name="jqclass" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="10"/>
+</ElementType>
+<ElementType name="class" content="textOnly" model="closed" dt:type="string">
+<AttributeType name="type"/>
+<attribute type="type" default="string"/>
+<AttributeType name="size"/>
+<attribute type="size" default="10"/>
+</ElementType>
+</Schema>
+<cxml xmlns="x-schema:#Schema">
+<row>
+<pk>1</pk>
+<parentpk>0</parentpk>
+<cprompt>Developer</cprompt>
+<chref/>
+<cfunction/>
+<isort>150</isort>
+<ilevel>1000</ilevel>
+<crole>i</crole>
+<objective> </objective>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>2</pk>
+<parentpk>15</parentpk>
+<cprompt>Tabs 1 Level</cprompt>
+<chref/>
+<cfunction>tabgenerator('1')</cfunction>
+<isort>10</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Modifiy the Menutest</objective>
+<cexec/>
+<jscript>$("#tabs<<lcUniqueID>>").wijtabs(); </jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>3</pk>
+<parentpk>16</parentpk>
+<cprompt>Accordion 1 Level Deep</cprompt>
+<chref/>
+<cfunction>accordion('1')</cfunction>
+<isort>10</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective> </objective>
+<cexec/>
+<jscript>$(document).ready(function () { $("#accordion<<lcUniqueID>>").wijaccordion({ header: ".<<lcUniqueID>>" }); });</jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>8</pk>
+<parentpk>1</parentpk>
+<cprompt>Set Permissions And Roles</cprompt>
+<chref/>
+<cfunction>FOMWizard('W')</cfunction>
+<isort>40</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Create Wizard</objective>
+<cexec/>
+<jscript><link href="./themes/wijmo/jquery.wijmo.wijwizard.css" rel="stylesheet" type="text/css" /> <script id="scriptInit" type="text/javascript"> $("#pages<<lcUniqueID>>").wijwizard(); </script> </jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>11</pk>
+<parentpk>1</parentpk>
+<cprompt>Add a Menu</cprompt>
+<chref>PrimeMenus.htm</chref>
+<cfunction/>
+<isort>30</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Add Menu Prompts -Batch</objective>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>12</pk>
+<parentpk>16</parentpk>
+<cprompt>Accordion 2 Levels Deep</cprompt>
+<chref/>
+<cfunction>accordion('2')</cfunction>
+<isort>20</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript>$(document).ready(function () { $("#accordion<<lcUniqueID>>").wijaccordion({ header: ".<<lcUniqueID>>" }); });</jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>13</pk>
+<parentpk>16</parentpk>
+<cprompt>Accordion 3 Levels Deep</cprompt>
+<chref/>
+<cfunction>accordion('3')</cfunction>
+<isort>30</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective> </objective>
+<cexec/>
+<jscript>$(document).ready(function () { $("#accordion<<lcUniqueID>>").wijaccordion({ header: ".<<lcUniqueID>>" }); });</jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>14</pk>
+<parentpk>16</parentpk>
+<cprompt>Accordion Control Grid Sub Tabs</cprompt>
+<chref/>
+<cfunction>accordion('4')</cfunction>
+<isort>40</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective> </objective>
+<cexec/>
+<jscript> $(document).ready(function () { $("#accordion<<lcUniqueID>>").wijaccordion({ header: ".<<lcUniqueID>>" }); });</jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>15</pk>
+<parentpk>100718</parentpk>
+<cprompt>Tab Functions</cprompt>
+<chref/>
+<cfunction/>
+<isort>50</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>16</pk>
+<parentpk>100718</parentpk>
+<cprompt>Accordion Controls</cprompt>
+<chref/>
+<cfunction/>
+<isort>60</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Add Menu Prompts -Batch</objective>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>17</pk>
+<parentpk>15</parentpk>
+<cprompt>Tabs 2 Levels</cprompt>
+<chref/>
+<cfunction>tabgenerator('2')</cfunction>
+<isort>20</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Modifiy the Menutest</objective>
+<cexec/>
+<jscript>$("#tabs<<lcUniqueID>>").wijtabs(); </jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>21</pk>
+<parentpk>100718</parentpk>
+<cprompt>Load HTML Fragment -Local</cprompt>
+<chref>giselle.htm</chref>
+<cfunction/>
+<isort>20</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Add Menu Prompts -Batch</objective>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>22</pk>
+<parentpk>100718</parentpk>
+<cprompt>Load HTML Fragment -Remote</cprompt>
+<chref>eliWalkerPalzkill.htm</chref>
+<cfunction/>
+<isort>30</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Add Menu Prompts -Batch</objective>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>23</pk>
+<parentpk>1</parentpk>
+<cprompt>Show Menu as Unordered List</cprompt>
+<chref>./ShowUnorderedList.ctx</chref>
+<cfunction/>
+<isort>20</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom_blank</jqclass>
+<class/>
+</row>
+<row>
+<pk>24</pk>
+<parentpk>1</parentpk>
+<cprompt>Show Menu as XML</cprompt>
+<chref>./ShowXML.ctx</chref>
+<cfunction/>
+<isort>10</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom_blank</jqclass>
+<class/>
+</row>
+<row>
+<pk>754</pk>
+<parentpk>0</parentpk>
+<cprompt>Kill Me</cprompt>
+<chref/>
+<cfunction/>
+<isort>93</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>771</pk>
+<parentpk>101074</parentpk>
+<cprompt>Claude</cprompt>
+<chref/>
+<cfunction/>
+<isort>73</isort>
+<ilevel>1000</ilevel>
+<crole>i</crole>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml><h1>Martin<h1></chtml>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>815</pk>
+<parentpk>828</parentpk>
+<cprompt>Theater Companies Combo Boxes</cprompt>
+<chref/>
+<cfunction>standardQuery('plays')</cfunction>
+<isort>70</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript><script src="wijs/STANDARDGRID.JS"></script> <script> var createComboBoxArray=['genre']// Fields that require a drop down var textAreaArray = ['body']// field to edit as a text box var createCheckBoxArray=[]// Fields that require a drop down genre_PMT=['Drama','Comedy','Classical'] $(document).ready(function () { var grid = $("#fomGrid").wijgrid({ showFilter: false, scrollMode: "auto", allowEditing: true, allowSorting: true, allowPaging: true, allowColSizing: true, beforeCellEdit: onBeforeCellEdit, afterCellEdit: onAfterCellEdit, afterCellUpdate: onAfterCellUpdate, pageSize: 10, pagerSettings: { position: "bottom" }, columnsAutogenerationMode: "none", data: gridData, columns: columnData }); }) </script></jscript>
+<lparent>0</lparent>
+<chtml><input type="button" onClick="javascript:addNew()" value="Add a New Record"> <div id="dialog" title="Extended Edit"> </div></chtml>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>817</pk>
+<parentpk>828</parentpk>
+<cprompt>HTML5 Data Elements</cprompt>
+<chref/>
+<cfunction>standardQuery('html5DataTypes')</cfunction>
+<isort>80</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript><script src="js/standardGrid.js"></script> <script src="js/standardGridNW.js"></script></jscript>
+<lparent>0</lparent>
+<chtml><input type="button" onClick="javascript:addNew()" value="Add a New Record"> <div id="dialog" title="Extended Edit"> </div></chtml>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>822</pk>
+<parentpk>828</parentpk>
+<cprompt>NW- With Combo Boxes and Text Edit</cprompt>
+<chref/>
+<cfunction>standardQuery('COISurvey')</cfunction>
+<isort>90</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript><script src="wijs/STANDARDGRID.JS"></script> <script src="wijs/SG-NW.JS"></script> </jscript>
+<lparent>0</lparent>
+<chtml><input type="button" onClick="javascript:addNew()" value="Add a New Record"> <div id="dialog" title="Extended Edit"> </div></chtml>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>828</pk>
+<parentpk>100718</parentpk>
+<cprompt>Grids and HTML5</cprompt>
+<chref/>
+<cfunction/>
+<isort>70</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>829</pk>
+<parentpk>828</parentpk>
+<cprompt>Grid with Filter</cprompt>
+<chref/>
+<cfunction>showGrid('nw')</cfunction>
+<isort>50</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>832</pk>
+<parentpk>828</parentpk>
+<cprompt>HTML Controls</cprompt>
+<chref/>
+<cfunction>standardQuery('htmlControls')</cfunction>
+<isort>60</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript> <script src="wijs/STANDARDGRID.JS"></script> <script src="wijs/SG-HTMLCONTROLS.JS"></script></jscript>
+<lparent>0</lparent>
+<chtml><input type="button" onClick="javascript:addNew()" value="Add a New Record"> <div id="dialog" title="Extended Edit"> </div></chtml>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>833</pk>
+<parentpk>828</parentpk>
+<cprompt>Generic Edit</cprompt>
+<chref>./ramquery.html</chref>
+<cfunction/>
+<isort>40</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>1057</pk>
+<parentpk>100718</parentpk>
+<cprompt>Form HTML5</cprompt>
+<chref>html5form.html</chref>
+<cfunction/>
+<isort>40</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript>$(function(){ function rptStatus(data){ $('#header').text('Success'); $('#divMain').empty().text(data) } $('#frmStart').ajaxForm({success:rptStatus}); })</jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>100529</pk>
+<parentpk>828</parentpk>
+<cprompt>Basic Grid - Guest Table</cprompt>
+<chref/>
+<cfunction>standardQuery('guest')</cfunction>
+<isort>10</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Display Grid with Minimum Functionality</objective>
+<cexec/>
+<jscript>$(document).ready(function () { var grid = $("#fomGrid").wijgrid({ data: gridData, columns: columnData }); })</jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>100530</pk>
+<parentpk>828</parentpk>
+<cprompt>Grid Guest Add New Entry Loop</cprompt>
+<chref/>
+<cfunction>standardQuery('guest')</cfunction>
+<isort>20</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Add new records to the grid</objective>
+<cexec/>
+<jscript><script src="wijs/STANDARDGRID.JS"></script> <script> var createComboBoxArray=['status']// Fields that require a drop down var textAreaArray = ['bio']// field to edit as a text box var createCheckBoxArray=['roles']// Fields that require a drop down var status_PMT=['Married','Single','Widowed','Divorces'] var roles_PMT=['Actor','Athlete','Singer'] $(document).ready(function () { var grid = $("#fomGrid").wijgrid({ showFilter: false, scrollMode: "auto", allowEditing: true, allowSorting: true, allowPaging: true, allowColSizing: true, beforeCellEdit: onBeforeCellEdit, afterCellEdit: onAfterCellEdit, afterCellUpdate: onAfterCellUpdate, pageSize: 10, pagerSettings: { position: "bottom" }, columnsAutogenerationMode: "none", data: gridData, columns: columnData }); }) </script></jscript>
+<lparent>0</lparent>
+<chtml><input type="button" onClick="javascript:addNew()" value="Add a New Record"> <div id="dialog" title="Extended Edit"> </div></chtml>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>100532</pk>
+<parentpk>828</parentpk>
+<cprompt>Edit Grid On Screen - Northwind</cprompt>
+<chref/>
+<cfunction>standardQuery('northwind')</cfunction>
+<isort>30</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective>Northwind Database- On Screen Editing. Combo Box Controls for Status and Country - Text Box for Address</objective>
+<cexec/>
+<jscript><script src="wijs/STANDARDGRID.JS"></script> <script> var createComboBoxArray=['status','country']// Fields that require a drop down var textAreaArray = ['address']// field to edit as a text box var createCheckBoxArray=[]// Fields that require a drop down var country_PMT = [] var status_PMT = []// array that powers dropdown // I renamed NorthWest $.getJSON('./fetchComboArray.ctx?Table='+tableName+'&Field=Status',function(data){ status_PMT=data;} ) $.getJSON('./fetchComboArray.ctx?Table='+tableName+'&Field=Country',function(data){ country_PMT=data;} ) $(document).ready(function () { var grid = $("#fomGrid").wijgrid({ showFilter: false, scrollMode: "auto", allowEditing: true, allowSorting: true, allowPaging: true, allowColSizing: true, beforeCellEdit: onBeforeCellEdit, afterCellEdit: onAfterCellEdit, afterCellUpdate: onAfterCellUpdate, pageSize: 10, pagerSettings: { position: "bottom" }, columnsAutogenerationMode: "none", data: gridData, columns: columnData }); }) </script></jscript>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>100718</pk>
+<parentpk>0</parentpk>
+<cprompt>Staff</cprompt>
+<chref/>
+<cfunction/>
+<isort>90</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101074</pk>
+<parentpk>0</parentpk>
+<cprompt>Supervisor</cprompt>
+<chref/>
+<cfunction/>
+<isort>100</isort>
+<ilevel>10</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101075</pk>
+<parentpk>101082</parentpk>
+<cprompt>Level 1</cprompt>
+<chref/>
+<cfunction/>
+<isort>30</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101076</pk>
+<parentpk>101075</parentpk>
+<cprompt>Target #1</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101077</pk>
+<parentpk>101075</parentpk>
+<cprompt>Target #2</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101078</pk>
+<parentpk>101074</parentpk>
+<cprompt>level 2</cprompt>
+<chref/>
+<cfunction/>
+<isort>20</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101080</pk>
+<parentpk>101078</parentpk>
+<cprompt>Target #4</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101081</pk>
+<parentpk>101078</parentpk>
+<cprompt>Target #5</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101082</pk>
+<parentpk>101074</parentpk>
+<cprompt>level 3</cprompt>
+<chref/>
+<cfunction/>
+<isort>30</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101083</pk>
+<parentpk>101074</parentpk>
+<cprompt>Target #6</cprompt>
+<chref/>
+<cfunction/>
+<isort>40</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>101084</pk>
+<parentpk>101074</parentpk>
+<cprompt>Target #7</cprompt>
+<chref/>
+<cfunction/>
+<isort>50</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>101085</pk>
+<parentpk>101074</parentpk>
+<cprompt>Target #8</cprompt>
+<chref/>
+<cfunction/>
+<isort>60</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101086</pk>
+<parentpk>101082</parentpk>
+<cprompt>level 4</cprompt>
+<chref/>
+<cfunction/>
+<isort>10</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101087</pk>
+<parentpk>101086</parentpk>
+<cprompt>Target #9</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101088</pk>
+<parentpk>101086</parentpk>
+<cprompt>Target #10</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101089</pk>
+<parentpk>101082</parentpk>
+<cprompt>Target #11</cprompt>
+<chref/>
+<cfunction/>
+<isort>20</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101105</pk>
+<parentpk>101074</parentpk>
+<cprompt>Test Color</cprompt>
+<chref/>
+<cfunction/>
+<isort>70</isort>
+<ilevel>1000</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+<row>
+<pk>101124</pk>
+<parentpk>0</parentpk>
+<cprompt>Manger</cprompt>
+<chref/>
+<cfunction/>
+<isort>110</isort>
+<ilevel>20</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101125</pk>
+<parentpk>0</parentpk>
+<cprompt>Policies</cprompt>
+<chref/>
+<cfunction/>
+<isort>120</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101126</pk>
+<parentpk>101125</parentpk>
+<cprompt>Create</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101127</pk>
+<parentpk>101125</parentpk>
+<cprompt>Review</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101128</pk>
+<parentpk>101125</parentpk>
+<cprompt>Administer</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101129</pk>
+<parentpk>101124</parentpk>
+<cprompt>Procedures</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101130</pk>
+<parentpk>101129</parentpk>
+<cprompt>Create</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101131</pk>
+<parentpk>101129</parentpk>
+<cprompt>Review</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101132</pk>
+<parentpk>101129</parentpk>
+<cprompt>Administer</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101133</pk>
+<parentpk>101124</parentpk>
+<cprompt>Regulations</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101134</pk>
+<parentpk>101133</parentpk>
+<cprompt>Create</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101135</pk>
+<parentpk>101133</parentpk>
+<cprompt>Review</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101136</pk>
+<parentpk>101133</parentpk>
+<cprompt>Administer</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101150</pk>
+<parentpk>0</parentpk>
+<cprompt>Exec VP</cprompt>
+<chref/>
+<cfunction/>
+<isort>130</isort>
+<ilevel>35</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101151</pk>
+<parentpk>101150</parentpk>
+<cprompt>Sytems</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101152</pk>
+<parentpk>101151</parentpk>
+<cprompt>QA</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101153</pk>
+<parentpk>101151</parentpk>
+<cprompt>Initiate</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101154</pk>
+<parentpk>101151</parentpk>
+<cprompt>Inspect</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101155</pk>
+<parentpk>101150</parentpk>
+<cprompt>Staff</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101156</pk>
+<parentpk>101155</parentpk>
+<cprompt>QA</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101157</pk>
+<parentpk>101155</parentpk>
+<cprompt>Initiate</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101158</pk>
+<parentpk>101155</parentpk>
+<cprompt>Inspect</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101159</pk>
+<parentpk>101150</parentpk>
+<cprompt>Sales</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101160</pk>
+<parentpk>101159</parentpk>
+<cprompt>QA</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101161</pk>
+<parentpk>101159</parentpk>
+<cprompt>Initiate</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101162</pk>
+<parentpk>101159</parentpk>
+<cprompt>Inspect</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101164</pk>
+<parentpk>0</parentpk>
+<cprompt>Global Admin</cprompt>
+<chref/>
+<cfunction/>
+<isort>140</isort>
+<ilevel>40</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101165</pk>
+<parentpk>101164</parentpk>
+<cprompt>Human Resources</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101166</pk>
+<parentpk>101165</parentpk>
+<cprompt>Hire</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101167</pk>
+<parentpk>101165</parentpk>
+<cprompt>Terminate</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101168</pk>
+<parentpk>101165</parentpk>
+<cprompt>Review</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101169</pk>
+<parentpk>101164</parentpk>
+<cprompt>Facilities</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>1</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101170</pk>
+<parentpk>101169</parentpk>
+<cprompt>Review</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101171</pk>
+<parentpk>101169</parentpk>
+<cprompt>Staff</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101172</pk>
+<parentpk>101169</parentpk>
+<cprompt>Process</cprompt>
+<chref/>
+<cfunction/>
+<isort>0</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript/>
+<lparent>0</lparent>
+<chtml/>
+<jqclass/>
+<class/>
+</row>
+<row>
+<pk>101186</pk>
+<parentpk>100718</parentpk>
+<cprompt>Hello World</cprompt>
+<chref/>
+<cfunction/>
+<isort>10</isort>
+<ilevel>0</ilevel>
+<crole/>
+<objective/>
+<cexec/>
+<jscript>$(function(){ $('h1').css('color','red') })</jscript>
+<lparent>0</lparent>
+<chtml><h1>Hello World</h1></chtml>
+<jqclass>fom-lc</jqclass>
+<class/>
+</row>
+</cxml>
+</xdoc>

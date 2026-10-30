@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#flyoutmenu {
+  display: flex;
+  list-style: none;
+  background: #2c3e50;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+#flyoutmenu li {
+  position: relative;
+}
+
+#flyoutmenu li a {
+  display: block;
+  padding: 12px 18px;
+  color: #ecf0f1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+#flyoutmenu > li > a:hover,
+#flyoutmenu > li:hover > a {
+  background: #34495e;
+}
+
+/* All nested ULs */
+#flyoutmenu ul {
+  display: none;
+  position: absolute;
+  list-style: none;
+  background: #34495e;
+  min-width: 200px;
+  z-index: 1000;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Second level drops down */
+#flyoutmenu > li > ul {
+  top: 100%;
+  left: 0;
+}
+
+/* Deeper levels fly out to the right */
+#flyoutmenu ul ul {
+  top: 0;
+  left: 100%;
+}
+
+#flyoutmenu ul li a:hover {
+  background: #4a6278;
+}
+
+/* Show on hover */
+#flyoutmenu li:hover > ul {
+  display: block;
+}
+
+/* After a menu item is clicked, fomHelpers.js adds .fom-collapsed to suppress
+   hover-open so the submenus collapse instead of lingering under the cursor.
+   Higher specificity than the rule above, so it wins. Cleared on mouseleave. */
+#flyoutmenu.fom-collapsed li:hover > ul {
+  display: none;
+}

@@ -1,0 +1,134 @@
+<style>
+  #plays-wrap { font-family: Arial, sans-serif; font-size: 13px; padding: 10px; }
+  #plays-wrap h3 { margin: 0 0 12px; color: #2c3e50; font-size: 16px; }
+  #plays-filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+  #plays-filters input, #plays-filters select {
+    padding: 5px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px;
+  }
+  #plays-search { width: 220px; }
+  #plays-count { color: #888; font-size: 12px; margin-left: 4px; }
+  #plays-grid { overflow-y: auto; max-height: calc(100vh - 180px); }
+  #plays-grid table { border-collapse: collapse; width: 100%; }
+  #plays-grid thead th {
+    position: sticky; top: 0; background: #2c3e50; color: white;
+    padding: 6px 10px; border: 1px solid #1a252f;
+    cursor: pointer; white-space: nowrap; user-select: none; text-align: left;
+  }
+  #plays-grid tbody tr { cursor: pointer; }
+  #plays-grid tbody tr:nth-child(even) { background: #f5f7fa; }
+  #plays-grid tbody tr:hover { background: #d6e4f7; }
+  #plays-grid tbody tr.selected { background: #1976D2; color: white; }
+  #plays-grid td { padding: 4px 10px; border: 1px solid #ddd; white-space: nowrap; }
+  #plays-detail {
+    margin-top: 14px; padding: 12px 16px; background: #f9f9f9;
+    border: 1px solid #ddd; border-radius: 4px; display: none;
+  }
+  #plays-detail h4 { margin: 0 0 8px; color: #2c3e50; }
+  #plays-detail .body-text { white-space: pre-wrap; font-size: 13px; line-height: 1.5; }
+</style>
+
+<div id="plays-wrap">
+  <h3>Theater — Plays</h3>
+  <div id="plays-filters">
+    <input id="plays-search" type="text" placeholder="Search title or slug…">
+    <select id="plays-genre"><option value="">All genres</option></select>
+    <span id="plays-count"></span>
+  </div>
+  <div id="plays-grid"><p style="color:#aaa">Loading…</p></div>
+  <div id="plays-detail">
+    <h4 id="detail-title"></h4>
+    <div class="body-text" id="detail-body"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var allRows = [], sortCol = 'id', sortAsc = true;
+
+  function esc(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function filtered() {
+    var q = $('#plays-search').val().toLowerCase();
+    var g = $('#plays-genre').val();
+    return allRows.filter(function(r) {
+      var matchQ = !q || (r.act||'').toLowerCase().includes(q) || (r.slug||'').toLowerCase().includes(q);
+      var matchG = !g || r.genre === g;
+      return matchQ && matchG;
+    });
+  }
+
+  function render() {
+    var rows = filtered();
+    rows.sort(function(a, b) {
+      var av = a[sortCol] == null ? '' : a[sortCol];
+      var bv = b[sortCol] == null ? '' : b[sortCol];
+      if (typeof av === 'number' && typeof bv === 'number') return sortAsc ? av-bv : bv-av;
+      av = String(av).toLowerCase(); bv = String(bv).toLowerCase();
+      return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
+
+    $('#plays-count').text(rows.length + ' of ' + allRows.length);
+
+    var cols = [
+      { key: 'id',    label: 'ID'    },
+      { key: 'act',   label: 'Title' },
+      { key: 'slug',  label: 'Slug'  },
+      { key: 'genre', label: 'Genre' }
+    ];
+
+    var html = '<table><thead><tr>';
+    cols.forEach(function(c) {
+      var arrow = sortCol === c.key ? (sortAsc ? ' ▲' : ' ▼') : '';
+      html += '<th data-col="' + c.key + '">' + c.label + arrow + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+    rows.forEach(function(r) {
+      html += '<tr data-id="' + r.id + '">';
+      cols.forEach(function(c) { html += '<td>' + esc(r[c.key]) + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $('#plays-grid').html(html);
+    $('#plays-detail').hide();
+  }
+
+  // Sort on header click
+  $(document).on('click', '#plays-grid th[data-col]', function() {
+    var col = $(this).data('col');
+    if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
+    render();
+  });
+
+  // Row click → show body
+  $(document).on('click', '#plays-grid tbody tr', function() {
+    var id = $(this).data('id');
+    var row = allRows.find(function(r) { return r.id == id; });
+    if (!row) return;
+    $('#plays-grid tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+    $('#detail-title').text(row.act + (row.genre ? '  —  ' + row.genre : ''));
+    $('#detail-body').text(row.body || '(no description)');
+    $('#plays-detail').show();
+  });
+
+  // Filter inputs
+  $(document).on('input', '#plays-search', render);
+  $(document).on('change', '#plays-genre', render);
+
+  // Load data
+  $.getJSON('/getTable?name=theater.plays', function(data) {
+    allRows = data.rows;
+    // Populate genre dropdown
+    var genres = [...new Set(allRows.map(function(r){ return r.genre||''; }).filter(Boolean))].sort();
+    genres.forEach(function(g) {
+      $('#plays-genre').append('<option value="' + esc(g) + '">' + esc(g) + '</option>');
+    });
+    render();
+  }).fail(function() {
+    $('#plays-grid').html('<p style="color:red">Failed to load plays.</p>');
+  });
+})();
+</script>

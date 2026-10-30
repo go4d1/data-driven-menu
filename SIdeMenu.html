@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Side Menu</title>
+    <link rel="stylesheet" href="/flyoutmenu.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 250px;
+        background: #2c3e50;
+        overflow-y: auto;
+        z-index: 1000;
+      }
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+      h1 {
+        color: #ecf0f1;
+        padding: 20px;
+        margin: 0;
+        background: #34495e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h1>Dynamic Menu</h1>
+      <div id="menu-container">Loading menu...</div>
+    </div>
+    <div class="main-content">
+      <h2>Main Content Area</h2>
+      <p>This is where your main content goes.</p>
+    </div>
+
+    <script>
+      fetch('/getMenuData?_=' + Date.now())
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById('menu-container').innerHTML = html;
+        })
+        .catch((err) => {
+          document.getElementById('menu-container').textContent =
+            'Failed to load menu: ' + err.message;
+        });
+    </script>
+  </body>
+</html>

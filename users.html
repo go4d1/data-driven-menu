@@ -1,0 +1,358 @@
+<style>
+  #u-wrap { font-family: Arial, sans-serif; font-size: 13px; padding: 10px; }
+  #u-wrap h3 { margin: 0 0 12px; color: #2c3e50; font-size: 16px; }
+
+  /* Tabs */
+  #u-tabs { display: flex; gap: 0; margin-bottom: 14px; border-bottom: 2px solid #2c3e50; }
+  .u-tab { padding: 6px 18px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-bottom: none; font-size: 13px; }
+  .u-tab.active { background: #2c3e50; color: white; border-color: #2c3e50; }
+
+  /* List */
+  #u-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+  #u-search { padding: 5px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; width: 220px; }
+  #u-count  { color: #888; font-size: 12px; }
+  .u-btn { padding: 5px 14px; border: none; border-radius: 3px; cursor: pointer; font-size: 13px; }
+  .u-btn-add    { background: #2e7d32; color: white; }
+  .u-btn-add:hover { background: #1b5e20; }
+  .u-btn-edit   { background: #1976D2; color: white; padding: 3px 9px; font-size: 12px; }
+  .u-btn-delete { background: #c62828; color: white; padding: 3px 9px; font-size: 12px; }
+
+  #u-grid { overflow-y: auto; max-height: calc(100vh - 200px); }
+  #u-grid table { border-collapse: collapse; width: 100%; }
+  #u-grid thead th { position: sticky; top: 0; z-index: 2; background: #2c3e50; color: white;
+    padding: 6px 10px; border: 1px solid #1a252f; cursor: pointer; white-space: nowrap;
+    user-select: none; text-align: left; }
+  #u-grid tbody td { padding: 4px 10px; border: 1px solid #ddd; }
+  #u-grid tbody tr:nth-child(even) { background: #f5f7fa; }
+  #u-grid tbody tr:hover { background: #e3eaf8; }
+  .badge-active   { background: #c8e6c9; color: #2e7d32; padding: 1px 7px; border-radius: 10px; }
+  .badge-inactive { background: #ffcdd2; color: #c62828; padding: 1px 7px; border-radius: 10px; }
+
+  /* Form */
+  #u-form-wrap { max-width: 480px; }
+  #u-form-title { font-size: 15px; font-weight: bold; color: #2c3e50; margin-bottom: 14px; }
+  .u-field { margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .u-field label { width: 110px; font-weight: bold; color: #555; flex-shrink: 0; }
+  .u-field input[type=text], .u-field input[type=email], .u-field select {
+    flex: 1; padding: 5px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; }
+  .u-field input[type=checkbox] { width: 16px; height: 16px; }
+  #u-form-btns { margin-top: 14px; display: flex; gap: 8px; }
+  #u-form-status { font-size: 12px; margin-top: 8px; }
+
+  /* Import */
+  #u-import-wrap { max-width: 600px; }
+  #u-drop-zone { border: 2px dashed #aaa; border-radius: 6px; padding: 30px; text-align: center;
+    color: #888; cursor: pointer; margin-bottom: 12px; }
+  #u-drop-zone.drag-over { border-color: #1976D2; background: #e3f2fd; color: #1976D2; }
+  #u-csv-file { display: none; }
+  #u-preview { overflow-x: auto; max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
+  #u-preview table { border-collapse: collapse; font-size: 12px; }
+  #u-preview th { background: #2c3e50; color: white; padding: 4px 8px; }
+  #u-preview td { padding: 3px 8px; border: 1px solid #ddd; }
+  #u-preview tr:nth-child(even) td { background: #f5f7fa; }
+  #u-import-status { font-size: 13px; margin-top: 8px; }
+</style>
+
+<div id="u-wrap">
+  <h3>Users</h3>
+  <div id="u-tabs">
+    <div class="u-tab active" data-tab="list">List</div>
+    <div class="u-tab" data-tab="form">Add / Edit</div>
+    <div class="u-tab" data-tab="import">Import CSV</div>
+  </div>
+
+  <!-- LIST -->
+  <div id="u-pane-list">
+    <div id="u-toolbar">
+      <input id="u-search" type="text" placeholder="Search name or email…">
+      <span id="u-count"></span>
+      <button class="u-btn u-btn-add" id="u-add-btn">+ Add User</button>
+    </div>
+    <div id="u-grid"><p style="color:#aaa">Loading…</p></div>
+  </div>
+
+  <!-- FORM -->
+  <div id="u-pane-form" style="display:none">
+    <div id="u-form-title">New User</div>
+    <div id="u-form-wrap">
+      <input type="hidden" id="f-id">
+      <div class="u-field"><label>First Name</label><input type="text" id="f-firstname"></div>
+      <div class="u-field"><label>Last Name</label><input type="text" id="f-lastname"></div>
+      <div class="u-field"><label>Email</label><input type="email" id="f-email"></div>
+      <div class="u-field"><label>Phone</label><input type="text" id="f-phone"></div>
+      <div class="u-field" style="align-items:flex-start">
+        <label style="padding-top:3px">Role</label>
+        <div id="f-role-checks" style="display:flex;flex-wrap:wrap;gap:4px 16px;line-height:1.9"></div>
+      </div>
+      <div class="u-field"><label>Permission</label><select id="f-permission"></select></div>
+      <div class="u-field"><label>Active</label><input type="checkbox" id="f-active" checked></div>
+      <div id="u-form-btns">
+        <button class="u-btn u-btn-add" id="u-save-btn">Save</button>
+        <button class="u-btn" id="u-cancel-btn" style="background:#607D8B;color:white">Cancel</button>
+      </div>
+      <div id="u-form-status"></div>
+    </div>
+  </div>
+
+  <!-- IMPORT -->
+  <div id="u-pane-import" style="display:none">
+    <div id="u-import-wrap">
+      <div id="u-drop-zone">
+        Drop a CSV file here, or <u>click to browse</u>
+        <input type="file" id="u-csv-file" accept=".csv">
+      </div>
+      <div id="u-preview"></div>
+      <div id="u-import-btns" style="display:none">
+        <button class="u-btn u-btn-add" id="u-import-btn">Import</button>
+        <button class="u-btn" id="u-clear-btn" style="background:#607D8B;color:white;margin-left:8px">Clear</button>
+      </div>
+      <div id="u-import-status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var allUsers = [], sortCol = 'lastname', sortAsc = true, csvRows = [], rexSettings = {};
+
+  function esc(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+  function showTab(name) {
+    ['list','form','import'].forEach(function(t) {
+      $('#u-pane-' + t).toggle(t === name);
+      $('.u-tab[data-tab="' + t + '"]').toggleClass('active', t === name);
+    });
+  }
+
+  $(document).on('click', '.u-tab', function() { showTab($(this).data('tab')); });
+
+  // ── Settings (roles + permission levels) ─────────────────────────────────
+  function buildFormControls() {
+    var roleHtml = (rexSettings.roles || []).map(function(r) {
+      return '<label style="cursor:pointer;white-space:nowrap"><input type="checkbox" class="role-check" value="' + esc(r.code) + '"> ' + esc(r.label) + '</label>';
+    }).join('');
+    $('#f-role-checks').html(roleHtml);
+
+    var permHtml = (rexSettings.permissionLevels || []).map(function(p) {
+      return '<option value="' + p.level + '">' + esc(p.label) + ' (' + p.level + ')</option>';
+    }).join('');
+    $('#f-permission').html(permHtml);
+  }
+
+  // ── List ──────────────────────────────────────────────────────────────────
+  function loadUsers() {
+    $.getJSON('/getTable?name=users', function(data) {
+      allUsers = data.rows;
+      renderList();
+    });
+  }
+
+  function renderList() {
+    var q = $('#u-search').val().toLowerCase();
+    var rows = allUsers.filter(function(r) {
+      return !q ||
+        (r.firstname||'').toLowerCase().includes(q) ||
+        (r.lastname||'').toLowerCase().includes(q) ||
+        (r.email||'').toLowerCase().includes(q);
+    });
+    rows.sort(function(a, b) {
+      var av = String(a[sortCol] == null ? '' : a[sortCol]).toLowerCase();
+      var bv = String(b[sortCol] == null ? '' : b[sortCol]).toLowerCase();
+      return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
+    $('#u-count').text(rows.length + ' of ' + allUsers.length);
+
+    var cols = [
+      { key: 'id',        label: 'ID'         },
+      { key: 'firstname', label: 'First Name'  },
+      { key: 'lastname',  label: 'Last Name'   },
+      { key: 'email',     label: 'Email'       },
+      { key: 'phone',     label: 'Phone'       },
+      { key: 'role',      label: 'Role'        },
+      { key: 'permission', label: 'Permission'  },
+      { key: 'active',    label: 'Active'      },
+      { key: '_actions',  label: ''            }
+    ];
+
+    var html = '<table><thead><tr>';
+    cols.forEach(function(c) {
+      if (c.key === '_actions') { html += '<th></th>'; return; }
+      var arrow = sortCol === c.key ? (sortAsc ? ' ▲' : ' ▼') : '';
+      html += '<th data-col="' + c.key + '">' + c.label + arrow + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+    rows.forEach(function(r) {
+      var badge = r.active
+        ? '<span class="badge-active">Active</span>'
+        : '<span class="badge-inactive">Inactive</span>';
+      html += '<tr>';
+      html += '<td>' + r.id + '</td>';
+      html += '<td>' + esc(r.firstname) + '</td>';
+      html += '<td>' + esc(r.lastname) + '</td>';
+      html += '<td>' + esc(r.email) + '</td>';
+      html += '<td>' + esc(r.phone) + '</td>';
+      html += '<td>' + esc(r.role) + '</td>';
+      html += '<td>' + (r.permission || 0) + '</td>';
+      html += '<td>' + badge + '</td>';
+      html += '<td style="white-space:nowrap">' +
+        '<button class="u-btn u-btn-edit"   data-id="' + r.id + '">Edit</button> ' +
+        '<button class="u-btn u-btn-delete" data-id="' + r.id + '">Delete</button>' +
+        '</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $('#u-grid').html(html);
+  }
+
+  $(document).on('input', '#u-search', renderList);
+
+  $(document).on('click', '#u-grid th[data-col]', function() {
+    var col = $(this).data('col');
+    if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
+    renderList();
+  });
+
+  // ── Form ──────────────────────────────────────────────────────────────────
+  function openForm(user) {
+    $('#f-id').val(user ? user.id : '');
+    $('#f-firstname').val(user ? user.firstname : '');
+    $('#f-lastname').val(user ? user.lastname : '');
+    $('#f-email').val(user ? user.email : '');
+    $('#f-phone').val(user ? user.phone : '');
+    var userRole = user ? (user.role || '') : '';
+    $('.role-check').each(function() { $(this).prop('checked', userRole.indexOf(this.value) >= 0); });
+    $('#f-permission').val(user ? (user.permission || 0) : 0);
+    $('#f-active').prop('checked', user ? user.active : true);
+    $('#u-form-title').text(user ? 'Edit User — ' + user.firstname + ' ' + user.lastname : 'New User');
+    $('#u-form-status').text('');
+    showTab('form');
+    $('#f-firstname').focus();
+  }
+
+  $(document).on('click', '#u-add-btn', function() { openForm(null); });
+
+  $(document).on('click', '.u-btn-edit', function() {
+    var id = parseInt($(this).data('id'));
+    openForm(allUsers.find(function(r) { return r.id === id; }));
+  });
+
+  $(document).on('click', '#u-cancel-btn', function() { showTab('list'); });
+
+  $(document).on('click', '#u-save-btn', function() {
+    var data = {
+      id:        $('#f-id').val() || null,
+      firstname: $('#f-firstname').val().trim(),
+      lastname:  $('#f-lastname').val().trim(),
+      email:     $('#f-email').val().trim(),
+      phone:     $('#f-phone').val().trim(),
+      role:       $('.role-check:checked').map(function() { return this.value; }).get().join(','),
+      permission: parseInt($('#f-permission').val(), 10) || 0,
+      active:     $('#f-active').is(':checked')
+    };
+    if (!data.firstname || !data.lastname) {
+      $('#u-form-status').text('First and last name are required.').css('color', 'red');
+      return;
+    }
+    $.ajax({
+      url: '/saveUser', method: 'POST', contentType: 'application/json',
+      data: JSON.stringify(data),
+      success: function() {
+        $('#u-form-status').text('Saved.').css('color', 'green');
+        loadUsers();
+        setTimeout(function() { showTab('list'); }, 800);
+      },
+      error: function() { $('#u-form-status').text('Save failed.').css('color', 'red'); }
+    });
+  });
+
+  $(document).on('click', '.u-btn-delete', function() {
+    var id = parseInt($(this).data('id'));
+    var user = allUsers.find(function(r) { return r.id === id; });
+    if (!confirm('Delete ' + user.firstname + ' ' + user.lastname + '?')) return;
+    $.ajax({
+      url: '/deleteUser', method: 'POST', contentType: 'application/json',
+      data: JSON.stringify({ id: id }),
+      success: function() { loadUsers(); },
+      error: function() { alert('Delete failed.'); }
+    });
+  });
+
+  // ── CSV Import ────────────────────────────────────────────────────────────
+  function parseCSV(text) {
+    var lines = text.trim().split(/\r?\n/);
+    var headers = lines[0].split(',').map(function(h) { return h.trim().replace(/^"|"$/g, '').toLowerCase(); });
+    return lines.slice(1).map(function(line) {
+      var vals = line.split(',').map(function(v) { return v.trim().replace(/^"|"$/g, ''); });
+      var obj = {};
+      headers.forEach(function(h, i) { obj[h] = vals[i] || ''; });
+      return obj;
+    }).filter(function(r) { return Object.values(r).some(function(v) { return v; }); });
+  }
+
+  function showPreview(rows) {
+    csvRows = rows;
+    if (!rows.length) { $('#u-preview').html(''); $('#u-import-btns').hide(); return; }
+    var headers = Object.keys(rows[0]);
+    var html = '<p style="color:#555;margin-bottom:6px">' + rows.length + ' rows parsed</p>';
+    html += '<table><thead><tr>' + headers.map(function(h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    rows.slice(0, 10).forEach(function(r) {
+      html += '<tr>' + headers.map(function(h) { return '<td>' + esc(r[h]) + '</td>'; }).join('') + '</tr>';
+    });
+    if (rows.length > 10) html += '<tr><td colspan="' + headers.length + '" style="color:#aaa;text-align:center">… ' + (rows.length - 10) + ' more rows</td></tr>';
+    html += '</tbody></table>';
+    $('#u-preview').html(html);
+    $('#u-import-btns').show();
+    $('#u-import-status').text('');
+  }
+
+  function handleFile(file) {
+    if (!file || !file.name.match(/\.csv$/i)) {
+      $('#u-import-status').text('Please select a CSV file.').css('color', 'red');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) { showPreview(parseCSV(e.target.result)); };
+    reader.readAsText(file);
+  }
+
+  $('#u-drop-zone').on('click', function() { $('#u-csv-file').click(); });
+  $('#u-csv-file').on('change', function() { handleFile(this.files[0]); });
+
+  $('#u-drop-zone').on('dragover', function(e) { e.preventDefault(); $(this).addClass('drag-over'); });
+  $('#u-drop-zone').on('dragleave drop', function(e) {
+    e.preventDefault(); $(this).removeClass('drag-over');
+    if (e.type === 'drop') handleFile(e.originalEvent.dataTransfer.files[0]);
+  });
+
+  $(document).on('click', '#u-clear-btn', function() {
+    csvRows = []; $('#u-preview').html(''); $('#u-import-btns').hide();
+    $('#u-csv-file').val(''); $('#u-import-status').text('');
+  });
+
+  $(document).on('click', '#u-import-btn', function() {
+    if (!csvRows.length) return;
+    $('#u-import-status').text('Importing…').css('color', '#555');
+    $.ajax({
+      url: '/importCSV', method: 'POST', contentType: 'application/json',
+      data: JSON.stringify({ rows: csvRows }),
+      success: function(res) {
+        $('#u-import-status').text('Imported ' + res.inserted + ' rows.').css('color', 'green');
+        csvRows = []; $('#u-preview').html(''); $('#u-import-btns').hide(); $('#u-csv-file').val('');
+        loadUsers();
+      },
+      error: function() { $('#u-import-status').text('Import failed.').css('color', 'red'); }
+    });
+  });
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+  $.getJSON('/getSettings', function(s) {
+    rexSettings = s;
+    buildFormControls();
+  });
+  loadUsers();
+})();
+</script>

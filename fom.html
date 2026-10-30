@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FOM</title>
+    <link rel="stylesheet" href="/flyoutmenu.css" />
+    <link rel="stylesheet" href="/fom.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/fomHelpers.js"></script>
+    <style>
+      #headerWrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 12px;
+        background: #2c3e50;
+        border-radius: 8px 8px 0 0;
+      }
+      #topbar {
+        display: flex;
+        align-items: center;
+        padding: 4px 12px;
+        background: #2c3e50;
+        color: white;
+        font-size: 13px;
+      }
+      #topbar span {
+        margin-right: 12px;
+        white-space: nowrap;
+        line-height: 1;
+      }
+      #topbar a {
+        color: #aed6f1;
+        text-decoration: none;
+        font-size: 12px;
+      }
+      #topbar a:hover {
+        text-decoration: underline;
+      }
+      #fomMenu #flyoutmenu {
+        border-radius: 6px 6px 0 0;
+      }
+      p {
+        color: #555;
+        line-height: 1.5;
+        font-size: 16px;
+        margin: 12px 0 12px 0;
+      }
+      ul#login-credentials {
+        color: #555;
+        line-height: 1.5;
+        font-size: 16px;
+        margin: 12px 0 12px 20px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="headerWrapper">
+      <div id="fomMenu"></div>
+      <div id="topbar">
+        <span id="user-greeting"></span>
+        <a id="auth-link" href="/logout">Sign Out</a>
+      </div>
+    </div>
+
+    <div id="container">
+      <h2 style="color: #555">Welcome to FOM (Flyout Menu) System</h2>
+      <p></p>
+
+      <p>
+        Please sign in to access the full features of the system. If you don't
+        have an account, you can sign up using the "Sign Up" tab in the login
+        form.
+      </p>
+      <p>To login as a Global Admin, use the following credentials:</p>
+      <ul id="login-credentials">
+        <li>Username: aaa@ddm.com</li>
+        <li>Password: testuser</li>
+      </ul>
+    </div>
+  </body>
+  <script>
+    // Auth check, then load the flyout menu.
+    // loadFomMenu, loadMenuPage, runJscript, spreadsheet, and the menu-link
+    // click handler all live in /fomHelpers.js.
+    fetch('/checkLogin')
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (data) {
+        document.getElementById('user-greeting').textContent = data.loggedIn
+          ? data.name
+          : 'Guest';
+        if (!data.loggedIn) {
+          var authLink = document.getElementById('auth-link');
+          authLink.textContent = 'Sign In';
+          authLink.href = '/login.html';
+        }
+        loadFomMenu();
+      });
+  </script>
+</html>

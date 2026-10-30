@@ -1,0 +1,619 @@
+<div id="bph-root">
+  <style>
+    #bph-root {
+      font-family: Arial, sans-serif;
+      color: #2c3e50;
+    }
+    #bph-root .bph-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    #bph-root .bph-head h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #2c3e50;
+    }
+    #bph-root .bph-count {
+      color: #7f8c9b;
+      font-size: 13px;
+    }
+    #bph-root .bph-search {
+      margin-left: auto;
+      width: 240px;
+      padding: 6px 10px;
+      border: 1px solid #d6dce2;
+      border-radius: 6px;
+      font: inherit;
+      font-size: 13px;
+    }
+    #bph-root .bph-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+    #bph-root .bph-card {
+      border: 1px solid #d6dce2;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    #bph-root .bph-card:hover,
+    #bph-root .bph-card:focus {
+      box-shadow: 0 4px 14px rgba(44, 62, 80, 0.18);
+      transform: translateY(-2px);
+      outline: none;
+    }
+    #bph-root .bph-thumb {
+      height: 170px;
+      background: #eef1f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #bph-root .bph-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    #bph-root .bph-noimg {
+      color: #9aa7b3;
+      font-size: 13px;
+      text-align: center;
+      padding: 10px;
+      line-height: 1.5;
+    }
+    #bph-root .bph-info {
+      padding: 8px 10px;
+    }
+    #bph-root .bph-title {
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #bph-root .bph-caption {
+      color: #5a6b7b;
+      font-size: 12px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #bph-root .bph-meta {
+      color: #9aa7b3;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    #bph-root .bph-copy {
+      margin-top: 8px;
+      padding: 3px 9px;
+      font: inherit;
+      font-size: 11px;
+      color: #2c3e50;
+      background: #eef1f4;
+      border: 1px solid #d6dce2;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #bph-root .bph-copy:hover {
+      background: #e2e7ec;
+    }
+    #bph-root .bph-msg {
+      grid-column: 1 / -1;
+      padding: 30px;
+      text-align: center;
+      color: #7f8c9b;
+      font-size: 14px;
+    }
+    #bph-root .bph-err {
+      color: #c0392b;
+    }
+    #bph-root .bph-ok {
+      color: #27ae60;
+    }
+    /* ── Lightbox ── */
+    #bph-root .bph-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(20, 28, 38, 0.92);
+      display: flex;
+      overflow: auto;
+      padding: 30px;
+    }
+    #bph-root .bph-lightbox[hidden] {
+      display: none;
+    }
+    #bph-root .bph-lb-inner {
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #bph-root .bph-lb-inner img {
+      max-width: 92vw;
+      max-height: 62vh;
+      object-fit: contain;
+      border-radius: 4px;
+      background: #fff;
+    }
+    #bph-root .bph-lb-fallback {
+      color: #ecf0f1;
+      font-size: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+    #bph-root .bph-openraw {
+      color: #aed6f1;
+    }
+    #bph-root .bph-editor {
+      margin-top: 12px;
+      width: min(560px, 92vw);
+      box-sizing: border-box;
+      background: #fff;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    #bph-root .bph-fld {
+      display: block;
+      margin-bottom: 10px;
+    }
+    #bph-root .bph-fld span {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+    #bph-root .bph-fld input,
+    #bph-root .bph-fld textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 8px;
+      border: 1px solid #d6dce2;
+      border-radius: 5px;
+      font: inherit;
+      font-size: 13px;
+      resize: vertical;
+    }
+    #bph-root .bph-editor-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #bph-root .bph-btn {
+      padding: 6px 14px;
+      font: inherit;
+      font-size: 13px;
+      border: 1px solid #d6dce2;
+      border-radius: 5px;
+      background: #eef1f4;
+      color: #2c3e50;
+      cursor: pointer;
+    }
+    #bph-root .bph-btn:hover {
+      background: #e2e7ec;
+    }
+    #bph-root .bph-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    #bph-root .bph-btn-primary {
+      background: #2c3e50;
+      border-color: #2c3e50;
+      color: #fff;
+      font-weight: bold;
+    }
+    #bph-root .bph-btn-primary:hover {
+      background: #22303d;
+    }
+    #bph-root .bph-btn-danger {
+      margin-left: auto;
+      background: #fff;
+      border-color: #e0b4b4;
+      color: #c0392b;
+    }
+    #bph-root .bph-btn-danger:hover {
+      background: #fbecec;
+    }
+    #bph-root .bph-editor-status {
+      min-height: 16px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #7f8c9b;
+    }
+    #bph-root .bph-close {
+      position: fixed;
+      top: 12px;
+      right: 22px;
+      color: #ecf0f1;
+      font-size: 34px;
+      line-height: 1;
+      cursor: pointer;
+      user-select: none;
+    }
+    #bph-root .bph-close:hover {
+      color: #fff;
+    }
+  </style>
+
+  <div class="bph-head">
+    <h2>Browse Photos</h2>
+    <span class="bph-count" id="bph-count"></span>
+    <input
+      type="search"
+      id="bph-search"
+      class="bph-search"
+      placeholder="Search title &amp; caption…"
+    />
+  </div>
+
+  <div id="bph-grid" class="bph-grid">
+    <div class="bph-msg">Loading photos…</div>
+  </div>
+
+  <div id="bph-lightbox" class="bph-lightbox" hidden>
+    <span class="bph-close" id="bph-close" title="Close (Esc)">&times;</span>
+    <div class="bph-lb-inner">
+      <img id="bph-lb-img" alt="" />
+      <div id="bph-lb-fallback" class="bph-lb-fallback" hidden></div>
+      <div class="bph-editor">
+        <label class="bph-fld">
+          <span>Title</span>
+          <input type="text" id="bph-edit-title" maxlength="100" />
+        </label>
+        <label class="bph-fld">
+          <span>Caption</span>
+          <textarea id="bph-edit-caption" rows="2"></textarea>
+        </label>
+        <div class="bph-editor-actions">
+          <button type="button" id="bph-save" class="bph-btn bph-btn-primary">
+            Save
+          </button>
+          <button type="button" id="bph-copy-lb" class="bph-btn">
+            Copy HTML
+          </button>
+          <button type="button" id="bph-delete" class="bph-btn bph-btn-danger">
+            Delete photo
+          </button>
+        </div>
+        <div id="bph-editor-status" class="bph-editor-status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('bph-root');
+    if (!root) return;
+    var grid = document.getElementById('bph-grid');
+    var countEl = document.getElementById('bph-count');
+    var searchInput = document.getElementById('bph-search');
+    var lb = document.getElementById('bph-lightbox');
+    var lbImg = document.getElementById('bph-lb-img');
+    var lbFallback = document.getElementById('bph-lb-fallback');
+    var closeBtn = document.getElementById('bph-close');
+    var editTitle = document.getElementById('bph-edit-title');
+    var editCaption = document.getElementById('bph-edit-caption');
+    var saveBtn = document.getElementById('bph-save');
+    var copyLbBtn = document.getElementById('bph-copy-lb');
+    var deleteBtn = document.getElementById('bph-delete');
+    var statusEl = document.getElementById('bph-editor-status');
+
+    var allRows = []; // every photo, sorted by id descending
+    var current = null; // photo open in the lightbox
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+    function fmtSize(b) {
+      b = +b || 0;
+      return b >= 1048576
+        ? (b / 1048576).toFixed(1) + ' MB'
+        : Math.max(1, Math.round(b / 1024)) + ' KB';
+    }
+    function fmtDate(s) {
+      if (!s) return '';
+      var d = new Date(s);
+      return isNaN(d.getTime()) ? '' : d.toLocaleDateString();
+    }
+    function setStatus(msg, kind) {
+      statusEl.textContent = msg || '';
+      statusEl.className =
+        'bph-editor-status' +
+        (kind === 'err' ? ' bph-err' : kind === 'ok' ? ' bph-ok' : '');
+    }
+
+    // ── Copy "<img src="/photo?id=N">" to the clipboard ──
+    function legacyCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {}
+      document.body.removeChild(ta);
+    }
+    function copyImgHtml(id, btn) {
+      var snippet = '<img src="/photo?id=' + id + '">';
+      function feedback() {
+        var prev = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.disabled = true;
+        setTimeout(function () {
+          btn.textContent = prev;
+          btn.disabled = false;
+        }, 1200);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(snippet).then(feedback, function () {
+          legacyCopy(snippet);
+          feedback();
+        });
+      } else {
+        legacyCopy(snippet);
+        feedback();
+      }
+    }
+
+    // ── Grid ──
+    function applyFilter() {
+      var q = searchInput.value.trim().toLowerCase();
+      if (!q) return allRows;
+      return allRows.filter(function (p) {
+        return (
+          (String(p.title || '') + ' ' + String(p.caption || ''))
+            .toLowerCase()
+            .indexOf(q) >= 0
+        );
+      });
+    }
+
+    function renderCard(p) {
+      var card = document.createElement('div');
+      card.className = 'bph-card';
+      card.tabIndex = 0;
+
+      var thumb = document.createElement('div');
+      thumb.className = 'bph-thumb';
+      var img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = p.title || '';
+      img.onerror = function () {
+        thumb.innerHTML = '<div class="bph-noimg">Preview unavailable</div>';
+      };
+      // Server-side thumbnail — small, fast, and JPEG (so TIFF previews too).
+      img.src = '/photo-thumb?id=' + p.id;
+      thumb.appendChild(img);
+
+      var info = document.createElement('div');
+      info.className = 'bph-info';
+
+      var titleEl = document.createElement('div');
+      titleEl.className = 'bph-title';
+      titleEl.textContent = p.title || '(untitled)';
+      var capEl = document.createElement('div');
+      capEl.className = 'bph-caption';
+      capEl.textContent = p.caption || ' ';
+      var metaEl = document.createElement('div');
+      metaEl.className = 'bph-meta';
+      metaEl.textContent =
+        fmtDate(p.uploaded_at) + ' · ' + fmtSize(p.sizebytes);
+
+      var copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'bph-copy';
+      copyBtn.textContent = 'Copy HTML';
+      copyBtn.title = 'Copy <img src="/photo?id=' + p.id + '"> to clipboard';
+      copyBtn.addEventListener('click', function (e) {
+        e.stopPropagation(); // don't open the lightbox
+        copyImgHtml(p.id, copyBtn);
+      });
+
+      info.appendChild(titleEl);
+      info.appendChild(capEl);
+      info.appendChild(metaEl);
+      info.appendChild(copyBtn);
+
+      card.appendChild(thumb);
+      card.appendChild(info);
+      card.addEventListener('click', function () {
+        openLightbox(p);
+      });
+      card.addEventListener('keydown', function (e) {
+        if (e.target !== card) return; // ignore keys from the copy button
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(p);
+        }
+      });
+      return card;
+    }
+
+    function renderGrid() {
+      if (!allRows.length) {
+        countEl.textContent = '';
+        grid.innerHTML =
+          '<div class="bph-msg">No photos have been uploaded yet.</div>';
+        return;
+      }
+      var rows = applyFilter();
+      countEl.textContent =
+        rows.length === allRows.length
+          ? allRows.length + (allRows.length === 1 ? ' photo' : ' photos')
+          : rows.length + ' of ' + allRows.length + ' photos';
+      grid.innerHTML = '';
+      if (!rows.length) {
+        grid.innerHTML =
+          '<div class="bph-msg">No photos match “' +
+          esc(searchInput.value.trim()) +
+          '”.</div>';
+        return;
+      }
+      rows.forEach(function (p) {
+        grid.appendChild(renderCard(p));
+      });
+    }
+
+    // ── Lightbox + editor ──
+    function onKey(e) {
+      if (e.key === 'Escape') closeLightbox();
+    }
+    function openLightbox(p) {
+      current = p;
+      lbImg.style.display = '';
+      lbImg.alt = p.title || '';
+      lbFallback.hidden = true;
+      lbFallback.innerHTML = '';
+      // TIFF and other formats browsers can't render fall back to a link.
+      lbImg.onerror = function () {
+        lbImg.style.display = 'none';
+        lbFallback.hidden = false;
+        lbFallback.innerHTML =
+          'Preview not supported in browser — ' +
+          '<a class="bph-openraw" target="_blank" href="/photo?id=' +
+          p.id +
+          '">open original file</a>';
+      };
+      lbImg.src = '/photo?id=' + p.id;
+      editTitle.value = p.title || '';
+      editCaption.value = p.caption || '';
+      setStatus('');
+      saveBtn.disabled = false;
+      deleteBtn.disabled = false;
+      lb.hidden = false;
+      document.addEventListener('keydown', onKey);
+    }
+    function closeLightbox() {
+      lb.hidden = true;
+      lbImg.onerror = null;
+      lbImg.removeAttribute('src');
+      current = null;
+      document.removeEventListener('keydown', onKey);
+    }
+    closeBtn.addEventListener('click', closeLightbox);
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb) closeLightbox();
+    });
+
+    // Update (the "U" in CRUD) — save title + caption.
+    saveBtn.addEventListener('click', function () {
+      if (!current) return;
+      setStatus('Saving…');
+      saveBtn.disabled = true;
+      fetch('/photo-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: current.id,
+          title: editTitle.value,
+          caption: editCaption.value,
+        }),
+      })
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (data) {
+          saveBtn.disabled = false;
+          if (!data.ok) {
+            setStatus('Save failed: ' + (data.error || 'unknown'), 'err');
+            return;
+          }
+          current.title = data.title;
+          current.caption = data.caption;
+          lbImg.alt = current.title || '';
+          setStatus('Saved.', 'ok');
+          renderGrid();
+        })
+        .catch(function (err) {
+          saveBtn.disabled = false;
+          setStatus('Save error: ' + err.message, 'err');
+        });
+    });
+
+    // Delete (the "D" in CRUD) — remove the photo, its file, and its thumbnail.
+    deleteBtn.addEventListener('click', function () {
+      if (!current) return;
+      var label = current.title ? '“' + current.title + '”' : 'this photo';
+      if (
+        !window.confirm(
+          'Delete ' + label + '?\nThis permanently removes the image file.',
+        )
+      )
+        return;
+      setStatus('Deleting…');
+      deleteBtn.disabled = true;
+      saveBtn.disabled = true;
+      var deletedId = current.id;
+      fetch('/photo-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: deletedId }),
+      })
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (data) {
+          if (!data.ok) {
+            deleteBtn.disabled = false;
+            saveBtn.disabled = false;
+            setStatus('Delete failed: ' + (data.error || 'unknown'), 'err');
+            return;
+          }
+          allRows = allRows.filter(function (p) {
+            return p.id !== deletedId;
+          });
+          closeLightbox();
+          renderGrid();
+        })
+        .catch(function (err) {
+          deleteBtn.disabled = false;
+          saveBtn.disabled = false;
+          setStatus('Delete error: ' + err.message, 'err');
+        });
+    });
+
+    copyLbBtn.addEventListener('click', function () {
+      if (current) copyImgHtml(current.id, copyLbBtn);
+    });
+    searchInput.addEventListener('input', renderGrid);
+
+    // ── Initial load ──
+    fetch('/getTable?name=photos&fields=id,title,caption,sizebytes,uploaded_at')
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (data) {
+        if (data.error) {
+          grid.innerHTML =
+            '<div class="bph-msg bph-err">' + esc(data.error) + '</div>';
+          return;
+        }
+        // Sort by id, descending (highest id first).
+        allRows = (data.rows || []).slice().sort(function (a, b) {
+          return (b.id || 0) - (a.id || 0);
+        });
+        renderGrid();
+      })
+      .catch(function (err) {
+        grid.innerHTML =
+          '<div class="bph-msg bph-err">Could not load photos: ' +
+          esc(err.message) +
+          '</div>';
+      });
+  })();
+</script>

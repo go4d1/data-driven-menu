@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FOM - Flyout Menu Developer</title>
+    <link rel="stylesheet" href="/flyoutmenu.css" />
+    <link rel="stylesheet" href="/fom.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/fomHelpers.js"></script>
+  </head>
+  <body>
+    <div id="fomMenu"></div>
+    <div id="container">
+      <h1>Common Home Page</h1>
+    </div>
+    <div id="status"></div>
+    <div id="displaytools"></div>
+  </body>
+  <script>
+    // loadFomMenu, loadMenuPage, runJscript, spreadsheet, and the menu-link
+    // click handler all live in /fomHelpers.js. This page only adds the
+    // developer tools (permission-level / role pickers).
+    loadFomMenu();
+
+    function loadDisplayTools() {
+      fetch('/displaytools?_=' + Date.now())
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById('displaytools').innerHTML = html;
+        });
+    }
+    loadDisplayTools();
+
+    function setPermissionLevel(level) {
+      fetch('/setPermissionLevel?level=' + level).then(() => {
+        loadFomMenu();
+        loadDisplayTools();
+      });
+    }
+
+    document.addEventListener('change', function (e) {
+      if (!e.target.classList.contains('setRole')) return;
+      fetch(
+        '/setRole?value=' + e.target.value + '&checked=' + e.target.checked,
+      ).then(loadFomMenu);
+    });
+  </script>
+</html>

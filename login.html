@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign In</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif; font-size: 14px; margin: 0;
+      background: #e8ecf0; display: flex; align-items: center; justify-content: center;
+      min-height: 100vh;
+    }
+    #card {
+      background: white; border-radius: 6px; box-shadow: 0 2px 12px rgba(0,0,0,.15);
+      width: 360px; padding: 28px 32px;
+    }
+    h2 { margin: 0 0 20px; color: #2c3e50; font-size: 20px; text-align: center; }
+
+    .tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #2c3e50; }
+    .tab {
+      flex: 1; text-align: center; padding: 7px; cursor: pointer;
+      background: #eee; border: 1px solid #ccc; border-bottom: none; font-size: 13px;
+    }
+    .tab.active { background: #2c3e50; color: white; border-color: #2c3e50; }
+
+    .pane { display: none; }
+    .pane.active { display: block; }
+
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-weight: bold; color: #555; margin-bottom: 4px; font-size: 13px; }
+    .field input {
+      width: 100%; padding: 7px 10px; border: 1px solid #ccc;
+      border-radius: 3px; font-size: 13px;
+    }
+    .field input:focus { outline: none; border-color: #1976D2; box-shadow: 0 0 0 2px rgba(25,118,210,.15); }
+
+    .btn-submit {
+      width: 100%; padding: 9px; background: #2c3e50; color: white;
+      border: none; border-radius: 3px; font-size: 14px; font-weight: bold;
+      cursor: pointer; margin-top: 4px;
+    }
+    .btn-submit:hover { background: #1a252f; }
+
+    .msg { font-size: 12px; margin-top: 10px; min-height: 18px; text-align: center; }
+    .msg.error { color: #c62828; }
+    .msg.ok    { color: #2e7d32; }
+  </style>
+</head>
+<body>
+  <div id="card">
+    <h2>FOM</h2>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="login">Sign In</div>
+      <div class="tab" data-tab="signup">Sign Up</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="pane active" id="pane-login">
+      <div class="field"><label>Email</label><input type="email" id="l-email" autocomplete="username"></div>
+      <div class="field"><label>Password</label><input type="password" id="l-password" autocomplete="current-password"></div>
+      <button class="btn-submit" id="btn-login">Sign In</button>
+      <div class="msg" id="l-msg"></div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="pane" id="pane-signup">
+      <div class="field"><label>First Name</label><input type="text" id="s-firstname"></div>
+      <div class="field"><label>Last Name</label><input type="text" id="s-lastname"></div>
+      <div class="field"><label>Email</label><input type="email" id="s-email" autocomplete="username"></div>
+      <div class="field"><label>Password</label><input type="password" id="s-password" autocomplete="new-password"></div>
+      <div class="field"><label>Confirm Password</label><input type="password" id="s-confirm" autocomplete="new-password"></div>
+      <button class="btn-submit" id="btn-signup">Create Account</button>
+      <div class="msg" id="s-msg"></div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var name = this.dataset.tab;
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.toggle('active', t.dataset.tab === name); });
+        document.querySelectorAll('.pane').forEach(function(p) { p.classList.toggle('active', p.id === 'pane-' + name); });
+      });
+    });
+
+    // Arrived here from /logout
+    if (new URLSearchParams(location.search).has('loggedOut')) {
+      var outMsg = document.getElementById('l-msg');
+      outMsg.className = 'msg ok';
+      outMsg.textContent = 'Successfully Logged Out';
+      history.replaceState(null, '', '/login.html');
+    }
+
+    function post(url, data, cb) {
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(function(r) { return r.json(); })
+      .then(cb)
+      .catch(function(e) { cb({ error: e.message }); });
+    }
+
+    // Login
+    document.getElementById('btn-login').addEventListener('click', function() {
+      var email    = document.getElementById('l-email').value.trim();
+      var password = document.getElementById('l-password').value;
+      var msg      = document.getElementById('l-msg');
+      if (!email || !password) { msg.className = 'msg error'; msg.textContent = 'Email and password are required.'; return; }
+      msg.className = 'msg'; msg.textContent = '…';
+      post('/login', { email: email, password: password }, function(res) {
+        if (res.error) { msg.className = 'msg error'; msg.textContent = res.error; }
+        else { window.location.href = '/fom.html'; }
+      });
+    });
+
+    document.getElementById('l-password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('btn-login').click();
+    });
+
+    // Signup
+    document.getElementById('btn-signup').addEventListener('click', function() {
+      var fn  = document.getElementById('s-firstname').value.trim();
+      var ln  = document.getElementById('s-lastname').value.trim();
+      var em  = document.getElementById('s-email').value.trim();
+      var pw  = document.getElementById('s-password').value;
+      var pw2 = document.getElementById('s-confirm').value;
+      var msg = document.getElementById('s-msg');
+      if (!fn || !ln || !em || !pw) { msg.className = 'msg error'; msg.textContent = 'All fields are required.'; return; }
+      if (pw !== pw2) { msg.className = 'msg error'; msg.textContent = 'Passwords do not match.'; return; }
+      msg.className = 'msg'; msg.textContent = '…';
+      post('/signup', { firstname: fn, lastname: ln, email: em, password: pw }, function(res) {
+        if (res.error) { msg.className = 'msg error'; msg.textContent = res.error; }
+        else { window.location.href = '/fom.html'; }
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

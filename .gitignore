@@ -1,0 +1,30 @@
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.DS_Store
+
+# Local PostgreSQL tenant data directories (see tenants.json)
+/aaa/
+/admin/
+/bbb/
+/ccc/
+/mvg/
+
+# Database dumps and runtime output
+*.sql
+!set_default_settings.sql
+*.log
+
+# User-uploaded content
+uploads/
+
+# Editor / tool local settings
+.claude/settings.local.json
+
+# VFP build artifacts
+*.FXP
+*.fxp
+*.BAK
+*.bak

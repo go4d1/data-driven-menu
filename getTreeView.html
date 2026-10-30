@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>fomMenu - Tree View</title>
+    <link rel="stylesheet" href="/treeview.css" />
+  </head>
+  <body>
+    <h1>Tree View Menu</h1>
+    <div id="treeview-container">Loading...</div>
+
+    <script>
+      fetch('/getTreeViewData?_=' + Date.now())
+        .then((res) => res.text())
+        .then((html) => {
+          const container = document.getElementById('treeview-container');
+          container.innerHTML = html;
+
+          // Mark parent nodes and add toggle behaviour
+          container.querySelectorAll('#treeview li').forEach((li) => {
+            if (li.querySelector(':scope > ul')) {
+              li.classList.add('has-children');
+              const link = li.querySelector(':scope > a');
+              if (link) {
+                link.classList.add('toggle');
+                link.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  li.classList.toggle('open');
+                });
+              }
+            }
+          });
+        })
+        .catch((err) => {
+          document.getElementById('treeview-container').textContent =
+            'Failed to load tree view: ' + err.message;
+        });
+    </script>
+  </body>
+</html>

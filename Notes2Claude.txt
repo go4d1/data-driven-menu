@@ -1,0 +1,104 @@
+
+Twenty years ago, I built a multi tenant website that served over 50 hospital networks - The application focused  on compliance with HIPPA regulations. It was very successful and continues to this day.  Many of the customers requested additional custom applications but we were unable to serve them because the menu system was a shared resource and could not be modified from one customer. I believe that a business opportunity currently exists for two reason:
+
+The custom application were mostly simple and could be quickly and effectively built with Cluade Code
+
+I have designed a unique data driven menu system that offers maximum flexibility for supporting custom application. 
+
+My design concept is to have a single table (fomMenu.dbf) that uses a recursive call to build an unordered list- (function fomMenu() in minimumsupport.prg  line 353) -  The unordered list is displayed as a drop down menu on FOM.HTM  - The same unordered list creates a treeview which is displayed on MENUBILDER.HTML - The treeview enables modifying the sort order and updating the fommenu.dbf
+
+
+When a menu item is clicked, it sends a message to the server: FOM.CTX?FOMMenuID=(ID)   - The fomMenu.dbf not only builds the menu,  when FOM.CTX is hit, it directs the response (Function menuFunction(tcID) in minimunsupport.prg  then routed to Function widgetHTML(oWidget,tlFOMMenu)) -  For example when ID = 11  (called from Menu->Developer->Add a Menu), the fomMenu.chref = "PrimeMenus.htm"  - that looks for a file with that name in the root folder and returns it.  (Eventually, this function should move to fomPages in PostgresSQL) - When a text file like the one below is uploaded:
+
+Rock and Roll  TEST
+.Rolling Stones
+:Gimme Shelter
+:Satisfaction
+:Not Fade Away
+.Beatles
+:Help
+:Nowhere Man
+:Drive My Car
+:Yesterday
+
+The response is directed to (Function PrimeMenus() in menubuilder.prg) and the new menu items are added. It is a main feature of my menu system that the menu can be so easily extended and enhanced via the treeview control
+
+
+The system enables each tenant to configure the drop down menu for individual permission levels and roles. This is set from Menu->Developer->Set Permissions and Roles -  (fomMenu.pk = 8 ) In this case, the decisive parameter is fomMenu.cfunction = "FOMWizard('W')  - The Menu Items that call Functions -  both execute the function and frequently use Wijmo suppor to achieve:
+
+Tabs Controls
+Accordian Controls
+Spreadsheet Controls
+Wizard Control
+
+
+The "Set Permissions and Roles" function calls a Wizard Control with three Forms - The Form to "Set Permission Permissions" gives as the example of a text file delimited by commas:
+
+0,Guest,black
+10,Staff, Blue
+20,Mechanic Mgr, Brown
+30,Auditor,Crimson
+40,Global Admi,Gold
+1000,Role Specific,green
+1000,Role Specific,navy 
+
+Each row represents: Permission level, Permission Label, Color -
+
+This needs to be modified - only let the tenant set the level and label - The color should be added automatically because it has no intrinsic meaning  - do it like this: For each row in the JSON object that is stored in REX_PATH add a unique color value from the array ["black","dodgerblue","crimson","forestgreen","purple","fuchsia","darkyellow","navy")   There should not be more than seven levels -
+
+
+THe VFP system we are updating never went into production  - It is missing the value of a logged in user to set the permission and role - For test purposes, we are using Session Variables - example:		Session.setsessionvar('level','40')
+Session.setsessionvar('role','i')		
+
+
+the menu uses the stored session variables to filter the databse to reflect user permission level and roles  (Function GetFOMmenu(tlTextInsert) in minimumsupport.prg  line 312). The SELECT from the database is (Select * From fomMenu Where ParentPK = 0 &lcFilter Into Cursor ctop Order By isort  - &lcFilter looks like this   " and (  ilevel <=20 or "i" $ crole )). 
+
+
+For test purposes, there is a container (<div id="displaytools">)  in the FOM.HTM page that updates the session variable via this select 
+
+<select id="cmbLevel" name="cmbLevel" onchange="fom.shell.setPermissionLevel(this.value)">
+When that select changes, the menu is updated
+
+
+
+The TreeView has the following capabilities:
+
+Change sort order via drag
+Change node stucture via drop
+Fetch an edit screen via click on link
+
+Drag and drop send an ajax message to (Function postData() in treeviewbuilder.prg line 184) which enables updating fomMenu with these parameters:
+
+	lnVars = Request.aFormVars(@laVars)
+	lcChildID= Request.Form('child')
+	lcparentpk= Request.Form('parent')
+	lcPrevID= Request.Form('previous')
+	lcNextID= Request.Form('next')
+
+	liDraggedID= Val(Substr(lcChildID,3))
+	liTargetID= Val(Substr(lcparentpk,3))
+	liPrevID= Val(Substr(lcPrevID,3))
+
+Clicking on an element fetches a FORM via ajax (FUNCTION treeViewEdit() in treeviewbuilder)  which is used to update fomMenu - Two forms are used:  one for parent and another for a leaf. The FORMs are returned from Function treeViewForm() and treeviewformshor() in treeviewbuilder.prg  In addition to submitting updates to the server, the forms also modify the TREEVIEW without refreshing the unordered list from the backedn - These include:
+
+Change the class of the text in the list (<a href="#"><span class="black">Hello World</span></a>
+Delete a link
+Add a sibling
+
+The colors on the Treeview indicate permission levels to access that function -This container needs to show each of permission levels in their assigned color - This appear on Menubuilder.htm in container
+<div id="colorlegend"></div> The legend is displayed from the JSON object in Rex_path  - each Level is diaplayed in the corresponding color.
+
+
+
+
+treeViewFormShort()
+
+
+
+
+
+
+
+
+
+

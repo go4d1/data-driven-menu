@@ -1,0 +1,477 @@
+<style>
+  #m-wrap {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    padding: 10px;
+  }
+  #m-wrap h3 {
+    margin: 0 0 12px;
+    color: #2c3e50;
+    font-size: 16px;
+  }
+
+  /* Tabs */
+  #m-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 14px;
+    border-bottom: 2px solid #2c3e50;
+  }
+  .m-tab {
+    padding: 6px 18px;
+    cursor: pointer;
+    background: #eee;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    font-size: 13px;
+  }
+  .m-tab.active {
+    background: #2c3e50;
+    color: white;
+    border-color: #2c3e50;
+  }
+
+  /* List */
+  #m-toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  #m-search {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 13px;
+    width: 220px;
+  }
+  #m-count {
+    color: #888;
+    font-size: 12px;
+  }
+  .m-btn {
+    padding: 5px 14px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .m-btn-add {
+    background: #2e7d32;
+    color: white;
+  }
+  .m-btn-add:hover {
+    background: #1b5e20;
+  }
+  .m-btn-edit {
+    background: #1976d2;
+    color: white;
+    padding: 3px 9px;
+    font-size: 12px;
+  }
+  .m-btn-delete {
+    background: #c62828;
+    color: white;
+    padding: 3px 9px;
+    font-size: 12px;
+  }
+
+  #m-grid {
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+  }
+  #m-grid table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  #m-grid thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #2c3e50;
+    color: white;
+    padding: 6px 10px;
+    border: 1px solid #1a252f;
+    white-space: nowrap;
+    user-select: none;
+    text-align: left;
+  }
+  #m-grid tbody td {
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+  }
+  #m-grid tbody td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  #m-grid tbody tr:nth-child(even) {
+    background: #f5f7fa;
+  }
+  #m-grid tbody tr:hover {
+    background: #e3eaf8;
+  }
+
+  /* Form */
+  #m-form-wrap {
+    max-width: 600px;
+  }
+  #m-form-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 14px;
+  }
+  .m-field {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .m-field label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 3px;
+  }
+  .m-field input[type='text'],
+  .m-field input[type='number'] {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+  #m-form-btns {
+    margin-top: 14px;
+    display: flex;
+    gap: 8px;
+  }
+  #m-form-status {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+</style>
+
+<div id="m-wrap">
+  <h3>Movies</h3>
+  <div id="m-tabs">
+    <div class="m-tab active" data-tab="list">List</div>
+    <div class="m-tab" data-tab="form">Add / Edit</div>
+  </div>
+
+  <!-- LIST -->
+  <div id="m-pane-list">
+    <div id="m-toolbar">
+      <input id="m-search" type="text" placeholder="Search performer, movie, character…" />
+      <span id="m-count"></span>
+      <button class="m-btn m-btn-add" id="m-add-btn">+ Add Movie</button>
+    </div>
+    <div id="m-grid"><p style="color: #aaa">Loading…</p></div>
+  </div>
+
+  <!-- FORM -->
+  <div id="m-pane-form" style="display: none">
+    <div id="m-form-title">New Movie</div>
+    <div id="m-form-wrap">
+      <input type="hidden" id="f-id" />
+      <div class="m-field">
+        <label>Performer Name</label>
+        <input type="text" id="f-performer_name" maxlength="100" />
+      </div>
+      <div class="m-field">
+        <label>Movie Name</label>
+        <input type="text" id="f-movie_name" maxlength="150" />
+      </div>
+      <div class="m-field">
+        <label>Character Name</label>
+        <input type="text" id="f-character_name" maxlength="100" />
+      </div>
+      <div class="m-field">
+        <label>Rating (0–10)</label>
+        <input type="number" id="f-rating" min="0" max="10" step="0.1" />
+      </div>
+      <div class="m-field">
+        <label>Box Office ($)</label>
+        <input type="number" id="f-box_office" min="0" step="0.01" />
+      </div>
+      <div id="m-form-btns">
+        <button class="m-btn m-btn-add" id="m-save-btn">Save</button>
+        <button
+          class="m-btn"
+          id="m-delete-btn"
+          style="background: #c62828; color: white; display: none"
+        >
+          Delete
+        </button>
+        <button
+          class="m-btn"
+          id="m-cancel-btn"
+          style="background: #607d8b; color: white"
+        >
+          Cancel
+        </button>
+      </div>
+      <div id="m-form-status"></div>
+    </div>
+  </div>
+</div>
+<script>
+  // Check login
+  fetch('/checkLogin')
+    .then((r) => r.json())
+    .then((data) => {
+      if (!data.loggedIn) {
+        window.location.href = '/login.html';
+      } else {
+        initPage();
+      }
+    })
+    .catch(() => {
+      window.location.href = '/login.html';
+    });
+
+  function initPage() {
+    let allMovies = [];
+    let currentEditId = null;
+
+    const tabs = document.querySelectorAll('.m-tab');
+    const paneList = document.getElementById('m-pane-list');
+    const paneForm = document.getElementById('m-pane-form');
+    const searchInput = document.getElementById('m-search');
+    const countSpan = document.getElementById('m-count');
+    const gridDiv = document.getElementById('m-grid');
+    const addBtn = document.getElementById('m-add-btn');
+    const saveBtn = document.getElementById('m-save-btn');
+    const deleteBtn = document.getElementById('m-delete-btn');
+    const cancelBtn = document.getElementById('m-cancel-btn');
+    const formTitle = document.getElementById('m-form-title');
+    const formStatus = document.getElementById('m-form-status');
+    const fId = document.getElementById('f-id');
+    const fPerformer = document.getElementById('f-performer_name');
+    const fMovie = document.getElementById('f-movie_name');
+    const fCharacter = document.getElementById('f-character_name');
+    const fRating = document.getElementById('f-rating');
+    const fBoxOffice = document.getElementById('f-box_office');
+
+    // Tab switching
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        paneList.style.display = tab.dataset.tab === 'list' ? 'block' : 'none';
+        paneForm.style.display = tab.dataset.tab === 'form' ? 'block' : 'none';
+        if (tab.dataset.tab === 'list') {
+          searchInput.value = '';
+          renderTable(allMovies);
+        }
+      });
+    });
+
+    // Load movies list
+    async function loadMovies() {
+      try {
+        const resp = await fetch('/getTable?name=movies');
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        // Handle both array and {columns, rows} responses
+        allMovies = Array.isArray(data) ? data : data.rows || [];
+        renderTable(allMovies);
+      } catch (err) {
+        gridDiv.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
+      }
+    }
+
+    function fmtMoney(v) {
+      if (v === null || v === undefined || v === '') return '';
+      const n = Number(v);
+      if (Number.isNaN(n)) return escapeHtml(v);
+      return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    }
+
+    // Render table
+    function renderTable(movies) {
+      if (!movies || !movies.length) {
+        gridDiv.innerHTML = '<p style="color:#aaa">No movies found.</p>';
+        countSpan.textContent = '';
+        return;
+      }
+      countSpan.textContent = `(${movies.length} total)`;
+      const cols = [
+        { key: 'id', label: 'ID' },
+        { key: 'performer_name', label: 'Performer' },
+        { key: 'movie_name', label: 'Movie' },
+        { key: 'character_name', label: 'Character' },
+        { key: 'rating', label: 'Rating', num: true },
+        { key: 'box_office', label: 'Box Office', num: true, money: true },
+      ];
+      let html = '<table><thead><tr>';
+      cols.forEach((col) => {
+        html += `<th>${col.label}</th>`;
+      });
+      html += '<th style="width:100px">Actions</th></tr></thead><tbody>';
+      movies.forEach((m) => {
+        html += '<tr>';
+        cols.forEach((col) => {
+          const raw = m[col.key];
+          const display = col.money
+            ? fmtMoney(raw)
+            : escapeHtml(raw === null || raw === undefined ? '' : raw);
+          html += `<td class="${col.num ? 'num' : ''}">${display}</td>`;
+        });
+        html += `<td>
+          <button class="m-btn m-btn-edit" onclick="window.editMovie(${m.id})">Edit</button>
+          <button class="m-btn m-btn-delete" onclick="window.deleteMovieConfirm(${m.id})">Del</button>
+        </td></tr>`;
+      });
+      html += '</tbody></table>';
+      gridDiv.innerHTML = html;
+    }
+
+    // Search filter
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      if (!query) {
+        renderTable(allMovies);
+        return;
+      }
+      const filtered = allMovies.filter(
+        (m) =>
+          (m.performer_name &&
+            m.performer_name.toLowerCase().includes(query)) ||
+          (m.movie_name && m.movie_name.toLowerCase().includes(query)) ||
+          (m.character_name &&
+            m.character_name.toLowerCase().includes(query)) ||
+          (m.id && String(m.id).includes(query)),
+      );
+      renderTable(filtered);
+    });
+
+    // Add new movie
+    addBtn.addEventListener('click', () => {
+      currentEditId = null;
+      fId.value = '';
+      fPerformer.value = '';
+      fMovie.value = '';
+      fCharacter.value = '';
+      fRating.value = '';
+      fBoxOffice.value = '';
+      formTitle.textContent = 'New Movie';
+      deleteBtn.style.display = 'none';
+      formStatus.textContent = '';
+      tabs[1].click();
+    });
+
+    // Edit movie
+    window.editMovie = async (id) => {
+      try {
+        const resp = await fetch(`/movie/${id}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const m = await resp.json();
+        currentEditId = id;
+        fId.value = m.id;
+        fPerformer.value = m.performer_name || '';
+        fMovie.value = m.movie_name || '';
+        fCharacter.value = m.character_name || '';
+        fRating.value = m.rating === null || m.rating === undefined ? '' : m.rating;
+        fBoxOffice.value =
+          m.box_office === null || m.box_office === undefined ? '' : m.box_office;
+        formTitle.textContent = `Edit Movie #${id}`;
+        deleteBtn.style.display = 'inline-block';
+        formStatus.textContent = '';
+        tabs[1].click();
+      } catch (err) {
+        formStatus.textContent = `Error: ${err.message}`;
+        formStatus.style.color = 'red';
+      }
+    };
+
+    // Build payload (empty number fields -> null)
+    function buildPayload() {
+      const ratingRaw = fRating.value.trim();
+      const boxRaw = fBoxOffice.value.trim();
+      return {
+        performer_name: fPerformer.value.trim(),
+        movie_name: fMovie.value.trim(),
+        character_name: fCharacter.value.trim(),
+        rating: ratingRaw === '' ? null : parseFloat(ratingRaw),
+        box_office: boxRaw === '' ? null : parseFloat(boxRaw),
+      };
+    }
+
+    // Save movie
+    saveBtn.addEventListener('click', async () => {
+      const payload = buildPayload();
+      formStatus.textContent = 'Saving…';
+      formStatus.style.color = '#888';
+      try {
+        if (currentEditId) {
+          const resp = await fetch(`/movie/${currentEditId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        } else {
+          const resp = await fetch('/movie', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        }
+        formStatus.textContent = 'Saved!';
+        formStatus.style.color = '#2e7d32';
+        setTimeout(() => {
+          tabs[0].click();
+          loadMovies();
+        }, 800);
+      } catch (err) {
+        formStatus.textContent = `Error: ${err.message}`;
+        formStatus.style.color = 'red';
+      }
+    });
+
+    // Delete from form
+    deleteBtn.addEventListener('click', () => {
+      if (currentEditId) window.deleteMovieConfirm(currentEditId);
+    });
+
+    // Delete movie
+    window.deleteMovieConfirm = async (id) => {
+      if (!confirm(`Delete movie ${id}? This cannot be undone.`)) return;
+      formStatus.textContent = 'Deleting…';
+      formStatus.style.color = '#888';
+      try {
+        const resp = await fetch(`/movie/${id}`, { method: 'DELETE' });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        formStatus.textContent = 'Deleted!';
+        formStatus.style.color = '#2e7d32';
+        setTimeout(() => {
+          tabs[0].click();
+          loadMovies();
+        }, 800);
+      } catch (err) {
+        formStatus.textContent = `Error: ${err.message}`;
+        formStatus.style.color = 'red';
+      }
+    };
+
+    // Cancel
+    cancelBtn.addEventListener('click', () => {
+      tabs[0].click();
+    });
+
+    // Helper
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;',
+      };
+      return String(text).replace(/[&<>"']/g, (m) => map[m]);
+    }
+
+    // Load on init
+    loadMovies();
+  }
+</script>

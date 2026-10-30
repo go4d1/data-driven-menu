@@ -1,0 +1,31 @@
+{
+  "nextPort": 5437,
+  "admin": {
+    "port": 5436,
+    "database": "postgres",
+    "dataDir": "admin"
+  },
+  "tenants": {
+    "aaa": {
+      "port": 5437,
+      "database": "aaa",
+      "dataDir": "aaa",
+      "apps": ["doctors"]
+    },
+    "bbb": {
+      "port": 5433,
+      "database": "bbb",
+      "dataDir": "bbb"
+    },
+    "ccc": {
+      "port": 5434,
+      "database": "ccc",
+      "dataDir": "ccc"
+    },
+    "mvg": {
+      "port": 5435,
+      "database": "mvg",
+      "dataDir": "mvg"
+    }
+  }
+}

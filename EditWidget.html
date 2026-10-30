@@ -1,0 +1,310 @@
+<div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px">
+  <h2 style="margin-top: 0; color: #2c3e50">Edit Widget</h2>
+
+  <form id="editWidgetForm">
+    <div style="margin-bottom: 14px">
+      <label
+        for="widgetId"
+        style="display: block; font-weight: bold; margin-bottom: 4px"
+        >Widget ID</label
+      >
+      <div style="display: flex; gap: 8px">
+        <input
+          type="number"
+          id="widgetId"
+          placeholder="Enter widget ID to load"
+          style="
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+          "
+        />
+        <button
+          type="button"
+          id="loadBtn"
+          style="
+            padding: 8px 18px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+        >
+          Load
+        </button>
+      </div>
+      <div
+        id="loadStatus"
+        style="font-size: 12px; color: #666; margin-top: 4px"
+      ></div>
+    </div>
+
+    <fieldset
+      id="editFields"
+      style="
+        border: 1px solid #ccc;
+        padding: 14px;
+        border-radius: 3px;
+        display: none;
+      "
+    >
+      <legend style="font-weight: bold; padding: 0 4px">Widget Data</legend>
+
+      <div style="margin-bottom: 14px">
+        <label
+          for="chead"
+          style="display: block; font-weight: bold; margin-bottom: 4px"
+          >Header (chead)</label
+        >
+        <input
+          type="text"
+          id="chead"
+          name="chead"
+          maxlength="500"
+          style="
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+          "
+        />
+      </div>
+
+      <div style="margin-bottom: 14px">
+        <label
+          for="cbody"
+          style="display: block; font-weight: bold; margin-bottom: 4px"
+          >Body (cbody)</label
+        >
+        <textarea
+          id="cbody"
+          name="cbody"
+          rows="6"
+          style="
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-family: monospace;
+          "
+        ></textarea>
+      </div>
+
+      <div style="margin-bottom: 14px">
+        <label
+          for="igroup"
+          style="display: block; font-weight: bold; margin-bottom: 4px"
+          >Group (igroup)</label
+        >
+        <input
+          type="number"
+          id="igroup"
+          name="igroup"
+          value="0"
+          style="
+            width: 120px;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+          "
+        />
+      </div>
+
+      <div style="margin-bottom: 14px">
+        <label
+          for="jscript"
+          style="display: block; font-weight: bold; margin-bottom: 4px"
+          >JavaScript (jscript)</label
+        >
+        <textarea
+          id="jscript"
+          name="jscript"
+          rows="8"
+          style="
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-family: monospace;
+          "
+        ></textarea>
+      </div>
+
+      <div style="display: flex; gap: 8px">
+        <button
+          type="submit"
+          style="
+            padding: 8px 18px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+        >
+          Save Changes
+        </button>
+        <button
+          type="button"
+          id="deleteBtn"
+          style="
+            padding: 8px 18px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+        >
+          Delete
+        </button>
+        <button
+          type="reset"
+          style="
+            padding: 8px 18px;
+            background: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+          "
+        >
+          Reset
+        </button>
+      </div>
+    </fieldset>
+
+    <div
+      id="editStatus"
+      style="margin-top: 14px; font-size: 13px; color: #d32f2f"
+    ></div>
+  </form>
+</div>
+
+<script>
+  // Check login on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    fetch('/checkLogin')
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.loggedIn) {
+          window.location.href = '/login.html';
+        }
+      })
+      .catch((err) => {
+        console.error('Login check failed:', err);
+        window.location.href = '/login.html';
+      });
+  });
+
+  const widgetIdInput = document.getElementById('widgetId');
+  const loadBtn = document.getElementById('loadBtn');
+  const editFields = document.getElementById('editFields');
+  const editForm = document.getElementById('editWidgetForm');
+  const deleteBtn = document.getElementById('deleteBtn');
+  const loadStatus = document.getElementById('loadStatus');
+  const editStatus = document.getElementById('editStatus');
+
+  let currentWidgetId = null;
+
+  loadBtn.addEventListener('click', async () => {
+    const id = widgetIdInput.value.trim();
+    if (!id) {
+      loadStatus.textContent = 'Please enter a widget ID';
+      loadStatus.style.color = '#d32f2f';
+      return;
+    }
+
+    loadStatus.textContent = 'Loading...';
+    loadStatus.style.color = '#666';
+
+    try {
+      const resp = await fetch(`/widget/${id}`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+
+      document.getElementById('chead').value = data.chead || '';
+      document.getElementById('cbody').value = data.cbody || '';
+      document.getElementById('igroup').value = data.igroup || 0;
+      document.getElementById('jscript').value = data.jscript || '';
+
+      currentWidgetId = id;
+      editFields.style.display = 'block';
+      loadStatus.textContent = 'Widget loaded';
+      loadStatus.style.color = '#4CAF50';
+      editStatus.textContent = '';
+    } catch (err) {
+      loadStatus.textContent = `Error: ${err.message}`;
+      loadStatus.style.color = '#d32f2f';
+      editFields.style.display = 'none';
+    }
+  });
+
+  editForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentWidgetId) return;
+
+    const payload = {
+      chead: document.getElementById('chead').value,
+      cbody: document.getElementById('cbody').value,
+      igroup: parseInt(document.getElementById('igroup').value, 10) || 0,
+      jscript: document.getElementById('jscript').value,
+    };
+
+    editStatus.textContent = 'Saving...';
+    editStatus.style.color = '#666';
+
+    try {
+      const resp = await fetch(`/widget/${currentWidgetId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      editStatus.textContent = 'Saved successfully';
+      editStatus.style.color = '#4CAF50';
+    } catch (err) {
+      editStatus.textContent = `Error: ${err.message}`;
+      editStatus.style.color = '#d32f2f';
+    }
+  });
+
+  deleteBtn.addEventListener('click', async () => {
+    if (!currentWidgetId) return;
+    if (!confirm(`Delete widget ${currentWidgetId}? This cannot be undone.`))
+      return;
+
+    editStatus.textContent = 'Deleting...';
+    editStatus.style.color = '#666';
+
+    try {
+      const resp = await fetch(`/widget/${currentWidgetId}`, {
+        method: 'DELETE',
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      editStatus.textContent = 'Deleted successfully';
+      editStatus.style.color = '#4CAF50';
+      editFields.style.display = 'none';
+      currentWidgetId = null;
+      widgetIdInput.value = '';
+    } catch (err) {
+      editStatus.textContent = `Error: ${err.message}`;
+      editStatus.style.color = '#d32f2f';
+    }
+  });
+
+  widgetIdInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loadBtn.click();
+  });
+</script>
