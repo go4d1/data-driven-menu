@@ -1,0 +1,88 @@
+<div id="alerts"></div>
+<h2>Upload Office Locations</h2>
+<p class="section-description">
+  Upload a complete list of offices. Address is used as the unique identifier.
+</p>
+
+<div class="form-group">
+  <label>Office List (CSV file)</label>
+  <input type="file" id="officesFile" accept=".csv" />
+  <small class="help-text">
+    CSV format: name,street,city,state,zip<br>
+    Example: Downtown Clinic,123 Main St,Wilmington,DE,19801
+  </small>
+</div>
+
+<button onclick="uploadOffices()" class="success">Upload Offices</button>
+<button onclick="clearOfficesForm()" class="secondary">Clear</button>
+
+<div id="uploadOfficesResult" style="margin-top: 1rem"></div>
+
+<script>
+  if (!document.getElementById('doctors-admin-css')) {
+    const l = document.createElement('link');
+    l.id = 'doctors-admin-css';
+    l.rel = 'stylesheet';
+    l.href = '/tenants/aaa/doctors/admin.css';
+    document.head.appendChild(l);
+  }
+
+  function showAlert(message, type) {
+    const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+    $('#alerts').append(alertHtml);
+    setTimeout(() => {
+      $(`#alerts .alert-${type}`).fadeOut(function () {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+
+  function uploadOffices() {
+    const fileInput = document.getElementById('officesFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      showAlert('Please select a CSV file', 'error');
+      return;
+    }
+
+    if (!file.name.endsWith('.csv')) {
+      showAlert('Please select a valid CSV file', 'error');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('officesFile', file);
+
+    $.ajax({
+      url: '/api/admin/offices/upload',
+      method: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        showAlert(
+          `Upload complete: ${response.created} created, ${response.updated} updated, ${response.deleted} deleted`,
+          'success',
+        );
+        $('#uploadOfficesResult').html(`
+          <div class="alert alert-success">
+            <strong>Upload Successful</strong><br>
+            Created: ${response.created}<br>
+            Updated: ${response.updated}<br>
+            Deleted: ${response.deleted}
+          </div>
+        `);
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to upload offices';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function clearOfficesForm() {
+    $('#officesFile').val('');
+    $('#uploadOfficesResult').empty();
+  }
+</script>

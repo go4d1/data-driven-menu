@@ -1,0 +1,74 @@
+<div id="alerts"></div>
+<h2>System Settings</h2>
+
+<div class="form-group">
+  <label for="followUpInterval">Follow-up Email Interval (days)</label>
+  <input
+    type="number"
+    id="followUpInterval"
+    min="1"
+    max="365"
+    value="14"
+  />
+  <small>Number of days between automatic follow-up emails (default: 14)</small>
+</div>
+
+<button onclick="saveSettings()" class="success">Save Settings</button>
+
+<script>
+  if (!document.getElementById('doctors-admin-css')) {
+    const l = document.createElement('link');
+    l.id = 'doctors-admin-css';
+    l.rel = 'stylesheet';
+    l.href = '/tenants/aaa/doctors/admin.css';
+    document.head.appendChild(l);
+  }
+
+  function showAlert(message, type) {
+    const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+    $('#alerts').append(alertHtml);
+    setTimeout(() => {
+      $(`#alerts .alert-${type}`).fadeOut(function () {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+
+  function loadSettings() {
+    $.ajax({
+      url: '/api/admin/settings',
+      method: 'GET',
+      success: function (response) {
+        const data = response.data || response;
+        if (data && data.follow_up_interval_days != null) {
+          $('#followUpInterval').val(data.follow_up_interval_days);
+        }
+      },
+    });
+  }
+
+  function saveSettings() {
+    const followUpInterval = parseInt($('#followUpInterval').val());
+
+    if (followUpInterval < 1) {
+      showAlert('Follow-up interval must be at least 1 day', 'error');
+      return;
+    }
+
+    $.ajax({
+      url: '/api/admin/settings',
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify({ follow_up_interval_days: followUpInterval }),
+      success: function () {
+        showAlert('Settings saved successfully', 'success');
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to save settings';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  loadSettings();
+</script>

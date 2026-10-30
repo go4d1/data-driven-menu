@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Credentialing Portal</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .navbar {
+        background-color: #2c3e50;
+        color: white;
+        padding: 1rem 2rem;
+        text-align: center;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .profile-section {
+        background-color: #ecf0f1;
+        padding: 2rem;
+        border-bottom: 1px solid #bdc3c7;
+      }
+
+      .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: #2c3e50;
+      }
+
+      input[type='text'],
+      input[type='email'],
+      select {
+        padding: 0.75rem;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+
+      input[type='text']:focus,
+      input[type='email']:focus,
+      select:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      button.secondary {
+        background-color: #95a5a6;
+        margin-left: 0.5rem;
+      }
+
+      button.secondary:hover {
+        background-color: #7f8c8d;
+      }
+
+      button.danger {
+        background-color: #e74c3c;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      button.danger:hover {
+        background-color: #c0392b;
+      }
+
+      button.success {
+        background-color: #27ae60;
+      }
+
+      button.success:hover {
+        background-color: #229954;
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 2px solid #ecf0f1;
+        background-color: #f8f9fa;
+      }
+
+      .tab-button {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 1rem;
+        color: #7f8c8d;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+      }
+
+      .tab-button.active {
+        color: #3498db;
+        border-bottom-color: #3498db;
+        background-color: white;
+      }
+
+      .tab-button:hover {
+        color: #2980b9;
+      }
+
+      .tab-content {
+        display: none;
+        padding: 2rem;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 0.5rem;
+      }
+
+      .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+      }
+
+      .record-list {
+        margin-top: 1rem;
+      }
+
+      .record-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: white;
+        border: 1px solid #ecf0f1;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+      }
+
+      .record-item-content {
+        flex: 1;
+      }
+
+      .record-item-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+      }
+
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        animation: fadeIn 0.3s;
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        animation: slideDown 0.3s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .button-group {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .loading.active {
+        display: block;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .confirmation-page {
+        display: none;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .confirmation-page.active {
+        display: block;
+      }
+
+      .confirmation-box {
+        background-color: #d4edda;
+        border: 2px solid #28a745;
+        border-radius: 8px;
+        padding: 2rem;
+        margin: 2rem 0;
+      }
+
+      .confirmation-box h2 {
+        color: #155724;
+        margin-bottom: 1rem;
+      }
+
+      .confirmation-details {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+        text-align: left;
+      }
+
+      .detail-item {
+        padding: 0.5rem 0;
+      }
+
+      .detail-label {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .detail-value {
+        color: #555;
+        margin-left: 1rem;
+      }
+
+      .edit-button {
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>Doctor Credentialing Portal</h1>
+    </div>
+
+    <div class="container">
+      <div class="profile-section" id="profileSection" style="display: none">
+        <h2 style="margin-bottom: 1rem">Doctor Profile</h2>
+        <div class="profile-grid">
+          <div class="form-group">
+            <label for="doctorFirstName">First Name</label>
+            <input type="text" id="doctorFirstName" placeholder="First name" />
+          </div>
+          <div class="form-group">
+            <label for="doctorLastName">Last Name</label>
+            <input type="text" id="doctorLastName" placeholder="Last name" />
+          </div>
+          <div class="form-group">
+            <label for="doctorEmail">Email</label>
+            <input
+              type="email"
+              id="doctorEmail"
+              placeholder="your.email@example.com"
+            />
+          </div>
+          <div class="form-group">
+            <label for="doctorPhone">Phone</label>
+            <input type="text" id="doctorPhone" placeholder="(555) 123-4567" />
+          </div>
+        </div>
+        <div style="margin-top: 1rem">
+          <button onclick="saveProfile()">Save Profile</button>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabsSection" style="display: none">
+        <button class="tab-button active" onclick="switchTab('credentials')">
+          Credentials
+        </button>
+        <button class="tab-button" onclick="switchTab('offices')">
+          Offices
+        </button>
+      </div>
+
+      <div id="credentials" class="tab-content active">
+        <div style="padding: 2rem">
+          <div class="section-title">Professional Credentials</div>
+          <p style="margin-bottom: 1rem; color: #666">
+            Add a credential for each state where you are licensed.
+          </p>
+
+          <div class="form-section">
+            <div class="form-group" style="margin-bottom: 1rem">
+              <label for="credentialState">State</label>
+              <select id="credentialState">
+                <option value="">Select a state...</option>
+                <option value="DE">Delaware</option>
+                <option value="MD">Maryland</option>
+                <option value="VA">Virginia</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem">
+              <label for="credentialNumber">Credential Number</label>
+              <input
+                type="text"
+                id="credentialNumber"
+                placeholder="Enter credential number"
+              />
+            </div>
+            <button onclick="addCredential()">Add Credential</button>
+          </div>
+
+          <div id="credentialsList" class="record-list"></div>
+        </div>
+      </div>
+
+      <div id="offices" class="tab-content">
+        <div style="padding: 2rem">
+          <div class="section-title">Office Assignments</div>
+          <p style="margin-bottom: 1rem; color: #666">
+            Add all offices where you work.
+          </p>
+
+          <div class="form-section">
+            <div class="form-group" style="margin-bottom: 1rem">
+              <label for="officeSearch">Office Name or Address</label>
+              <input
+                type="text"
+                id="officeSearch"
+                placeholder="Start typing office name or address..."
+                autocomplete="off"
+              />
+              <div
+                id="officeAutocomplete"
+                style="margin-top: 0.5rem; max-height: 200px; overflow-y: auto"
+              ></div>
+            </div>
+            <div
+              id="selectedOfficeInfo"
+              style="
+                margin-bottom: 1rem;
+                padding: 1rem;
+                background: #f0f0f0;
+                border-radius: 4px;
+                display: none;
+              "
+            >
+              <strong id="selectedOfficeName"></strong><br />
+              <small id="selectedOfficeAddress"></small>
+            </div>
+            <button
+              id="addOfficeButton"
+              onclick="addOffice()"
+              style="display: none"
+            >
+              Add Office
+            </button>
+          </div>
+
+          <div id="officesList" class="record-list"></div>
+        </div>
+      </div>
+
+      <div class="confirmation-page" id="confirmationPage">
+        <div class="confirmation-box">
+          <h2>Confirmation Complete</h2>
+          <p>
+            Thank you for confirming your information. Your records have been
+            updated.
+          </p>
+          <div class="confirmation-details">
+            <div class="detail-item">
+              <span class="detail-label">Confirmation Time:</span>
+              <span class="detail-value" id="confirmationTime"></span>
+            </div>
+          </div>
+          <button class="edit-button" onclick="editEntries()">
+            Edit My Entries
+          </button>
+        </div>
+      </div>
+
+      <div id="alerts" style="padding: 0 2rem; padding-top: 1rem"></div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      let currentDoctor = null;
+      let selectedOfficeId = null;
+      let selectedOfficeData = null;
+
+      function getCredentialFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('credential');
+      }
+
+      function getActionFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('action');
+      }
+
+      $(document).ready(function () {
+        const credential = getCredentialFromUrl();
+        if (!credential) {
+          showAlert('Invalid or missing authentication credential', 'error');
+          return;
+        }
+
+        authenticateDoctor(credential);
+      });
+
+      function authenticateDoctor(credential) {
+        $.ajax({
+          url: `/api/doctor/auth/${encodeURIComponent(credential)}`,
+          method: 'GET',
+          success: function (response) {
+            currentDoctor = response.doctor;
+            loadProfile();
+          },
+          error: function () {
+            showAlert(
+              'Authentication failed. Please check your link and try again.',
+              'error',
+            );
+          },
+        });
+      }
+
+      function loadProfile() {
+        $.ajax({
+          url: '/api/doctor/profile',
+          method: 'GET',
+          success: function (response) {
+            currentDoctor = response.doctor;
+            document.getElementById('doctorFirstName').value =
+              response.doctor.firstname || '';
+            document.getElementById('doctorLastName').value =
+              response.doctor.lastname || '';
+            document.getElementById('doctorEmail').value =
+              response.doctor.email;
+            document.getElementById('doctorPhone').value =
+              response.doctor.phone || '';
+
+            document.getElementById('profileSection').style.display = 'block';
+            document.getElementById('tabsSection').style.display = 'flex';
+
+            loadCredentials(response.credentials || []);
+            loadOffices(response.offices || []);
+
+            const action = getActionFromUrl();
+            if (action === 'confirm') {
+              showConfirmationPage();
+            } else if (action === 'edit') {
+              switchTab('credentials');
+            }
+          },
+          error: function () {
+            showAlert('Failed to load profile', 'error');
+          },
+        });
+      }
+
+      function saveProfile() {
+        const profileData = {
+          firstname: $('#doctorFirstName').val(),
+          lastname: $('#doctorLastName').val(),
+          email: $('#doctorEmail').val(),
+          phone: $('#doctorPhone').val(),
+        };
+
+        $.ajax({
+          url: '/api/doctor/profile',
+          method: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify(profileData),
+          success: function (response) {
+            currentDoctor = response.doctor;
+            showAlert('Profile updated successfully', 'success');
+          },
+          error: function (xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to update profile';
+            showAlert(error, 'error');
+          },
+        });
+      }
+
+      function loadCredentials(credentials) {
+        const container = $('#credentialsList');
+        container.empty();
+
+        if (credentials.length === 0) {
+          container.html(
+            '<p style="color: #999; padding: 1rem;">No credentials added yet</p>',
+          );
+          return;
+        }
+
+        credentials.forEach((cred) => {
+          const html = `
+            <div class="record-item">
+              <div class="record-item-content">
+                <strong>${cred.state}</strong> - ${cred.credential_number}
+              </div>
+              <div class="record-item-actions">
+                <button class="danger" onclick="deleteCredential(${cred.id})">Delete</button>
+              </div>
+            </div>
+          `;
+          container.append(html);
+        });
+      }
+
+      function addCredential() {
+        const state = $('#credentialState').val();
+        const number = $('#credentialNumber').val();
+
+        if (!state || !number) {
+          showAlert(
+            'Please select a state and enter a credential number',
+            'error',
+          );
+          return;
+        }
+
+        $.ajax({
+          url: '/api/doctor/credentials',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ state, credential_number: number }),
+          success: function () {
+            $('#credentialState').val('');
+            $('#credentialNumber').val('');
+            loadProfile();
+            showAlert('Credential added successfully', 'success');
+          },
+          error: function (xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to add credential';
+            showAlert(error, 'error');
+          },
+        });
+      }
+
+      function deleteCredential(credentialId) {
+        if (!confirm('Are you sure you want to delete this credential?'))
+          return;
+
+        $.ajax({
+          url: `/api/doctor/credentials/${credentialId}`,
+          method: 'DELETE',
+          success: function () {
+            loadProfile();
+            showAlert('Credential deleted successfully', 'success');
+          },
+          error: function (xhr) {
+            const error =
+              xhr.responseJSON?.error || 'Failed to delete credential';
+            showAlert(error, 'error');
+          },
+        });
+      }
+
+      function loadOffices(offices) {
+        const container = $('#officesList');
+        container.empty();
+
+        if (offices.length === 0) {
+          container.html(
+            '<p style="color: #999; padding: 1rem;">No offices assigned yet</p>',
+          );
+          return;
+        }
+
+        offices.forEach((office) => {
+          const html = `
+            <div class="record-item">
+              <div class="record-item-content">
+                <strong>${office.name}</strong><br>
+                <small>${office.street}, ${office.city}, ${office.state} ${office.zip}</small>
+              </div>
+              <div class="record-item-actions">
+                <button class="danger" onclick="deleteOffice(${office.doctor_office_id})">Delete</button>
+              </div>
+            </div>
+          `;
+          container.append(html);
+        });
+      }
+
+      $('#officeSearch').on('input', function () {
+        const query = $(this).val();
+        if (query.length < 1) {
+          $('#officeAutocomplete').empty();
+          return;
+        }
+
+        $.ajax({
+          url: `/api/doctor/offices/autocomplete?q=${encodeURIComponent(query)}`,
+          method: 'GET',
+          success: function (response) {
+            const container = $('#officeAutocomplete');
+            container.empty();
+
+            if (response.offices.length === 0) {
+              container.html(
+                '<div style="padding: 1rem; color: #999;">No offices found</div>',
+              );
+              return;
+            }
+
+            response.offices.forEach((office) => {
+              const html = `
+                <div style="padding: 0.75rem; border: 1px solid #ddd; margin-bottom: 0.5rem; cursor: pointer; border-radius: 4px;" onclick="selectOffice(${office.id}, '${office.name.replace(/'/g, "\\'")}', '${(office.street + ', ' + office.city + ', ' + office.state + ' ' + office.zip).replace(/'/g, "\\'")}')">
+                  <strong>${office.name}</strong><br>
+                  <small>${office.street}, ${office.city}, ${office.state} ${office.zip}</small>
+                </div>
+              `;
+              container.append(html);
+            });
+          },
+        });
+      });
+
+      function selectOffice(officeId, name, address) {
+        selectedOfficeId = officeId;
+        selectedOfficeData = { name, address };
+        $('#officeSearch').val(name);
+        $('#officeAutocomplete').empty();
+        $('#selectedOfficeName').text(name);
+        $('#selectedOfficeAddress').text(address);
+        $('#selectedOfficeInfo').show();
+        $('#addOfficeButton').show();
+      }
+
+      function addOffice() {
+        if (!selectedOfficeId) {
+          showAlert('Please select an office', 'error');
+          return;
+        }
+
+        $.ajax({
+          url: '/api/doctor/offices',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ office_id: selectedOfficeId }),
+          success: function () {
+            selectedOfficeId = null;
+            selectedOfficeData = null;
+            $('#officeSearch').val('');
+            $('#selectedOfficeInfo').hide();
+            $('#addOfficeButton').hide();
+            loadProfile();
+            showAlert('Office added successfully', 'success');
+          },
+          error: function (xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to add office';
+            showAlert(error, 'error');
+          },
+        });
+      }
+
+      function deleteOffice(doctorOfficeId) {
+        if (!confirm('Are you sure you want to remove this office?')) return;
+
+        $.ajax({
+          url: `/api/doctor/offices/${doctorOfficeId}`,
+          method: 'DELETE',
+          success: function () {
+            loadProfile();
+            showAlert('Office removed successfully', 'success');
+          },
+          error: function (xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to remove office';
+            showAlert(error, 'error');
+          },
+        });
+      }
+
+      function switchTab(tabName) {
+        $('.tab-button').removeClass('active');
+        $('.tab-content').removeClass('active');
+        $(`button[onclick="switchTab('${tabName}')"]`).addClass('active');
+        $(`#${tabName}`).addClass('active');
+      }
+
+      function showConfirmationPage() {
+        $.ajax({
+          url: '/api/doctor/attestation/confirm',
+          method: 'POST',
+          success: function (response) {
+            $('#profileSection').hide();
+            $('#tabsSection').hide();
+            $('#alerts').empty();
+            $('#confirmationPage').addClass('active');
+            $('#confirmationTime').text(
+              new Date(response.last_attested_at).toLocaleString(),
+            );
+          },
+          error: function () {
+            showAlert('Failed to confirm attestation', 'error');
+          },
+        });
+      }
+
+      function editEntries() {
+        const credential = getCredentialFromUrl();
+        window.history.pushState(
+          {},
+          document.title,
+          window.location.pathname + '?credential=' + encodeURIComponent(credential),
+        );
+        location.reload();
+      }
+
+      function showAlert(message, type) {
+        const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+        $('#alerts').append(alertHtml);
+        setTimeout(() => {
+          $(`#alerts .alert-${type}`).fadeOut(function () {
+            $(this).remove();
+          });
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>

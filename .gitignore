@@ -5,16 +5,17 @@ yarn-error.log*
 .env
 .DS_Store
 
-# Local PostgreSQL tenant data directories (see tenants.json)
+# Local PostgreSQL data directories (see tenants.json; created by db/setup.js).
+# Tenant app code lives in tenants/<prefix>/, never in these folders.
 /aaa/
 /admin/
 /bbb/
 /ccc/
 /mvg/
 
-# Database dumps and runtime output
-*.sql
-!set_default_settings.sql
+# Database dumps (top level only — db/ and tenants/ hold committed schema files)
+/*.sql
+!/set_default_settings.sql
 *.log
 
 # User-uploaded content

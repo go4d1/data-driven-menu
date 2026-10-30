@@ -1,0 +1,89 @@
+<div id="alerts"></div>
+<h2>Upload Doctor Profiles</h2>
+<p class="section-description">
+  Upload a complete list of doctors. This will create new records,
+  update existing ones, and mark missing doctors as deleted.
+</p>
+
+<div class="form-group">
+  <label>Doctor List (CSV file)</label>
+  <input type="file" id="doctorsFile" accept=".csv" />
+  <small class="help-text">
+    CSV format: firstname,lastname,email,phone<br>
+    Example: John,Smith,john@example.com,(555) 123-4567
+  </small>
+</div>
+
+<button onclick="uploadDoctors()" class="success">Upload Doctors</button>
+<button onclick="clearDoctorsForm()" class="secondary">Clear</button>
+
+<div id="uploadDoctorsResult" style="margin-top: 1rem"></div>
+
+<script>
+  if (!document.getElementById('doctors-admin-css')) {
+    const l = document.createElement('link');
+    l.id = 'doctors-admin-css';
+    l.rel = 'stylesheet';
+    l.href = '/tenants/aaa/doctors/admin.css';
+    document.head.appendChild(l);
+  }
+
+  function showAlert(message, type) {
+    const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+    $('#alerts').append(alertHtml);
+    setTimeout(() => {
+      $(`#alerts .alert-${type}`).fadeOut(function () {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+
+  function uploadDoctors() {
+    const fileInput = document.getElementById('doctorsFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      showAlert('Please select a CSV file', 'error');
+      return;
+    }
+
+    if (!file.name.endsWith('.csv')) {
+      showAlert('Please select a valid CSV file', 'error');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('doctorsFile', file);
+
+    $.ajax({
+      url: '/api/admin/doctors/upload',
+      method: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        showAlert(
+          `Upload complete: ${response.created} created, ${response.updated} updated, ${response.deleted} deleted`,
+          'success',
+        );
+        $('#uploadDoctorsResult').html(`
+          <div class="alert alert-success">
+            <strong>Upload Successful</strong><br>
+            Created: ${response.created}<br>
+            Updated: ${response.updated}<br>
+            Deleted: ${response.deleted}
+          </div>
+        `);
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to upload doctors';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function clearDoctorsForm() {
+    $('#doctorsFile').val('');
+    $('#uploadDoctorsResult').empty();
+  }
+</script>

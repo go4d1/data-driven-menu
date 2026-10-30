@@ -1,11 +1,15 @@
 {
-  "name": "node-scaffold",
+  "name": "data-driven-menu",
   "version": "1.0.0",
-  "description": "A basic Node.js project scaffold",
+  "description": "Multi-tenant, data-driven flyout menu system (Node.js + PostgreSQL)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "node index.js"
+    "dev": "node --watch index.js",
+    "db:setup": "node db/setup.js",
+    "db:export": "node db/export.js",
+    "db:start": "node startAll.js",
+    "db:stop": "node stopAll.js"
   },
   "keywords": [],
   "author": "",

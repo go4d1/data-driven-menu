@@ -1,0 +1,80 @@
+<div id="alerts"></div>
+<h2>Dashboard</h2>
+<div class="stats-grid" id="statsGrid"></div>
+<div class="table-container">
+  <h3>Recent Non-Responders</h3>
+  <table id="nonRespondersTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Type</th>
+        <th>Follow-ups Sent</th>
+        <th>Last Follow-up</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  if (!document.getElementById('doctors-admin-css')) {
+    const l = document.createElement('link');
+    l.id = 'doctors-admin-css';
+    l.rel = 'stylesheet';
+    l.href = '/tenants/aaa/doctors/admin.css';
+    document.head.appendChild(l);
+  }
+
+  function showAlert(message, type) {
+    const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+    $('#alerts').append(alertHtml);
+    setTimeout(() => {
+      $(`#alerts .alert-${type}`).fadeOut(function () {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+
+  function loadDashboard() {
+    $.ajax({
+      url: '/api/admin/reports/non-responders',
+      method: 'GET',
+      success: function (response) {
+        const totalNonResponders = response.data.length;
+        const statsHtml = `
+          <div class="stat-card">
+            <h3>Non-Responders</h3>
+            <div class="value">${totalNonResponders}</div>
+          </div>
+        `;
+        $('#statsGrid').html(statsHtml);
+
+        const tableHtml = response.data
+          .slice(0, 10)
+          .map(
+            (doctor) => `
+              <tr>
+                <td>${doctor.firstname} ${doctor.lastname}</td>
+                <td>${doctor.email}</td>
+                <td><span class="badge badge-info">${doctor.email_type || 'N/A'}</span></td>
+                <td>${doctor.follow_ups_sent || 0}</td>
+                <td>${doctor.last_follow_up_at ? new Date(doctor.last_follow_up_at).toLocaleDateString() : 'Never'}</td>
+              </tr>
+            `,
+          )
+          .join('');
+
+        $('#nonRespondersTable tbody').html(
+          tableHtml ||
+            '<tr><td colspan="5" style="text-align: center; color: #999;">No non-responders</td></tr>',
+        );
+      },
+      error: function () {
+        showAlert('Failed to load dashboard', 'error');
+      },
+    });
+  }
+
+  loadDashboard();
+</script>

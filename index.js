@@ -224,8 +224,10 @@ const CORE_SAVED_QUERIES = {
 
 // ── Tenant app loader (Pattern B) ────────────────────────────────────────────
 // Each tenant in tenants.json can declare an `apps` array. For each app name,
-// we require `<prefix>/<app>/app.js` which exports { name, routes,
+// we require `tenants/<prefix>/<app>/app.js` which exports { name, routes,
 // savedQueries, seed }. Loaded once at boot; restart to pick up changes.
+// (App code can't live in `<prefix>/` itself — that's the tenant's Postgres
+// data directory, which initdb requires to be empty.)
 function loadTenantApps() {
   const registry = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'tenants.json'), 'utf8'),
@@ -233,9 +235,9 @@ function loadTenantApps() {
   const byPrefix = {};
   for (const [prefix, t] of Object.entries(registry.tenants)) {
     byPrefix[prefix] = (t.apps || []).map((appName) => {
-      const appPath = path.join(__dirname, prefix, appName, 'app.js');
-      const mod = require(appPath);
-      return { ...mod, _appDir: path.join(prefix, appName) };
+      const appDir = path.join('tenants', prefix, appName);
+      const mod = require(path.join(__dirname, appDir, 'app.js'));
+      return { ...mod, _appDir: appDir };
     });
   }
   return byPrefix;
@@ -726,7 +728,7 @@ const server = http.createServer(async (req, res) => {
     const m = /^\/doctor\/auth\/([^/?]+)$/.exec(req.url.split('?')[0]);
     if (m) {
       res.writeHead(302, {
-        Location: `/aaa/doctors/pages/portal.html?credential=${encodeURIComponent(m[1])}`,
+        Location: `/tenants/aaa/doctors/pages/portal.html?credential=${encodeURIComponent(m[1])}`,
       });
       res.end();
       return;
@@ -2944,6 +2946,21 @@ const server = http.createServer(async (req, res) => {
   if (!path.resolve(filePath).startsWith(path.resolve(__dirname) + path.sep)) {
     res.writeHead(400, { 'Content-Type': 'text/plain' });
     res.end('Invalid path');
+    return;
+  }
+  // Only site files are public. Refuse dotfiles (.env holds SMTP creds),
+  // Postgres data directories (any top-level folder with a PG_VERSION file),
+  // server-side folders, top-level dumps/logs, and the tenant registry.
+  const segments = path.relative(__dirname, path.resolve(filePath)).split(path.sep);
+  const top = segments[0];
+  if (
+    segments.some((s) => s.startsWith('.')) ||
+    ['node_modules', 'uploads', 'db', 'tenants.json'].includes(top) ||
+    (segments.length === 1 && /\.(sql|log)$/i.test(top)) ||
+    (segments.length > 1 && fs.existsSync(path.join(__dirname, top, 'PG_VERSION')))
+  ) {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not found');
     return;
   }
   fs.readFile(filePath, (err, data) => {

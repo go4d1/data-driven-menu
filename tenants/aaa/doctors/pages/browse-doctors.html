@@ -1,0 +1,239 @@
+<div id="alerts"></div>
+<h2>Browse Doctors</h2>
+<p class="section-description">
+  View, create, edit, and delete doctor profiles.
+</p>
+
+<div
+  style="
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  "
+>
+  <div
+    class="form-group"
+    style="margin-bottom: 0; flex: 1; min-width: 200px"
+  >
+    <label for="doctorSearch">Search</label>
+    <input
+      type="text"
+      id="doctorSearch"
+      placeholder="Search by name, email, or phone"
+    />
+  </div>
+  <button onclick="loadDoctors()">Search</button>
+  <button onclick="openDoctorModal()" class="success">+ Add Doctor</button>
+</div>
+
+<div class="table-container">
+  <table id="doctorsTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Last Response</th>
+        <th>Last Attested</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<div id="doctorModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="doctorModalTitle">Add Doctor</h2>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="doctorId" />
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="doctorFirstName">First Name</label>
+          <input type="text" id="doctorFirstName" maxlength="255" />
+        </div>
+        <div class="form-group">
+          <label for="doctorLastName">Last Name</label>
+          <input type="text" id="doctorLastName" maxlength="255" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="doctorEmail">Email</label>
+        <input type="text" id="doctorEmail" maxlength="255" />
+      </div>
+      <div class="form-group">
+        <label for="doctorPhone">Phone</label>
+        <input type="text" id="doctorPhone" maxlength="20" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button onclick="saveDoctor()" class="success">Save</button>
+      <button onclick="closeDoctorModal()" class="secondary">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  if (!document.getElementById('doctors-admin-css')) {
+    const l = document.createElement('link');
+    l.id = 'doctors-admin-css';
+    l.rel = 'stylesheet';
+    l.href = '/tenants/aaa/doctors/admin.css';
+    document.head.appendChild(l);
+  }
+
+  function showAlert(message, type) {
+    const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+    $('#alerts').append(alertHtml);
+    setTimeout(() => {
+      $(`#alerts .alert-${type}`).fadeOut(function () {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+
+  function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function loadDoctors() {
+    const search = $('#doctorSearch').val();
+
+    $.ajax({
+      url: '/api/admin/doctors',
+      method: 'GET',
+      data: { search },
+      success: function (response) {
+        const rows = response.data || [];
+        const tbody = rows
+          .map(
+            (d) => `
+              <tr>
+                <td>${escapeHtml(d.firstname)} ${escapeHtml(d.lastname)}</td>
+                <td>${escapeHtml(d.email)}</td>
+                <td>${escapeHtml(d.phone || '')}</td>
+                <td>${d.last_response_at ? new Date(d.last_response_at).toLocaleDateString() : '<span style="color:#999">Never</span>'}</td>
+                <td>${d.last_attested_at ? new Date(d.last_attested_at).toLocaleDateString() : '<span style="color:#999">Never</span>'}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button onclick='editDoctorRow(${d.id})'>Edit</button>
+                    <button onclick='deleteDoctorRow(${d.id})' class="danger">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            `,
+          )
+          .join('');
+
+        $('#doctorsTable tbody').html(
+          tbody ||
+            '<tr><td colspan="6" style="text-align: center; color: #999;">No doctors found</td></tr>',
+        );
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to load doctors';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function openDoctorModal(doctor) {
+    const editing = !!doctor;
+    $('#doctorModalTitle').text(editing ? 'Edit Doctor' : 'Add Doctor');
+    $('#doctorId').val(editing ? doctor.id : '');
+    $('#doctorFirstName').val(editing ? doctor.firstname : '');
+    $('#doctorLastName').val(editing ? doctor.lastname : '');
+    $('#doctorEmail').val(editing ? doctor.email : '');
+    $('#doctorPhone').val(editing ? doctor.phone || '' : '');
+    $('#doctorModal').css('display', 'block');
+  }
+
+  function closeDoctorModal() {
+    $('#doctorModal').css('display', 'none');
+  }
+
+  function editDoctorRow(id) {
+    $.ajax({
+      url: `/api/admin/doctors/${id}`,
+      method: 'GET',
+      success: function (response) {
+        openDoctorModal(response.data);
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to load doctor';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function saveDoctor() {
+    const id = $('#doctorId').val();
+    const payload = {
+      firstname: $('#doctorFirstName').val().trim(),
+      lastname: $('#doctorLastName').val().trim(),
+      email: $('#doctorEmail').val().trim(),
+      phone: $('#doctorPhone').val().trim() || null,
+    };
+
+    if (!payload.firstname || !payload.lastname || !payload.email) {
+      showAlert('First name, last name, and email are required', 'error');
+      return;
+    }
+
+    const url = id ? `/api/admin/doctors/${id}` : '/api/admin/doctors';
+    const method = id ? 'PUT' : 'POST';
+
+    $.ajax({
+      url,
+      method,
+      contentType: 'application/json',
+      data: JSON.stringify(payload),
+      success: function () {
+        showAlert(id ? 'Doctor updated' : 'Doctor created', 'success');
+        closeDoctorModal();
+        loadDoctors();
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to save doctor';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function deleteDoctorRow(id) {
+    if (!confirm('Are you sure? This will soft-delete the doctor.')) return;
+
+    $.ajax({
+      url: `/api/admin/doctors/${id}`,
+      method: 'DELETE',
+      success: function () {
+        showAlert('Doctor deleted', 'success');
+        loadDoctors();
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to delete doctor';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  $(document).off('click.doctorModal').on('click.doctorModal', '#doctorModal', function (e) {
+    if (e.target.id === 'doctorModal') closeDoctorModal();
+  });
+
+  $(document).off('keyup.doctorSearch').on('keyup.doctorSearch', '#doctorSearch', function (e) {
+    if (e.key === 'Enter') loadDoctors();
+  });
+
+  loadDoctors();
+</script>

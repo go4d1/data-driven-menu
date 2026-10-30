@@ -1,0 +1,165 @@
+<div id="alerts"></div>
+<h2>Reports</h2>
+
+<div class="form-group">
+  <label for="reportType">Select Report:</label>
+  <select id="reportType" onchange="loadReport()">
+    <option value="">Select a report...</option>
+    <option value="compliance-gaps">Compliance Gaps</option>
+    <option value="doctors-by-office-state">Doctors by Office State</option>
+    <option value="doctors-by-credential-state">Doctors by Credential State</option>
+    <option value="offices-by-doctor">Offices by Doctor</option>
+  </select>
+</div>
+
+<div id="reportContent" class="table-container"></div>
+
+<script>
+  if (!document.getElementById('doctors-admin-css')) {
+    const l = document.createElement('link');
+    l.id = 'doctors-admin-css';
+    l.rel = 'stylesheet';
+    l.href = '/tenants/aaa/doctors/admin.css';
+    document.head.appendChild(l);
+  }
+
+  function showAlert(message, type) {
+    const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+    $('#alerts').append(alertHtml);
+    setTimeout(() => {
+      $(`#alerts .alert-${type}`).fadeOut(function () {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+
+  function loadReport() {
+    const reportType = $('#reportType').val();
+    if (!reportType) {
+      $('#reportContent').empty();
+      return;
+    }
+
+    $.ajax({
+      url: `/api/admin/reports/${reportType}`,
+      method: 'GET',
+      success: function (response) {
+        renderReport(reportType, response.data);
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to load report';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function renderReport(reportType, data) {
+    let html = '';
+
+    if (reportType === 'compliance-gaps') {
+      html = `
+        <h3>Compliance Gaps Report</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Doctor Name</th>
+              <th>State</th>
+              <th>Offices in State</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data
+              .map(
+                (row) => `
+              <tr>
+                <td>${row.firstname} ${row.lastname}</td>
+                <td><strong>${row.state}</strong></td>
+                <td>${row.offices_in_state}</td>
+                <td><span class="badge badge-danger">Missing Credential</span></td>
+              </tr>
+            `,
+              )
+              .join('')}
+          </tbody>
+        </table>
+      `;
+    } else if (reportType === 'offices-by-doctor') {
+      html = `
+        <h3>Offices by Doctor Report</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Doctor Name</th>
+              <th>Office Name</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data
+              .map(
+                (row) => `
+              <tr>
+                <td>${row.doctor_name}</td>
+                <td>${row.office_name}</td>
+                <td>${row.street}, ${row.city}, ${row.state} ${row.zip}</td>
+              </tr>
+            `,
+              )
+              .join('')}
+          </tbody>
+        </table>
+      `;
+    } else if (
+      reportType === 'doctors-by-office-state' ||
+      reportType === 'doctors-by-credential-state'
+    ) {
+      const title =
+        reportType === 'doctors-by-office-state'
+          ? 'Doctors by Office State'
+          : 'Doctors by Credential State';
+      const stateHeader =
+        reportType === 'doctors-by-office-state'
+          ? 'Office State'
+          : 'Credential State';
+      const states = Object.keys(data).sort();
+      html = `
+        <h3>${title} Report</h3>
+        ${states
+          .map((state) => {
+            const doctors = data[state] || [];
+            return `
+          <h4 style="margin-top: 1.5rem;">${stateHeader}: ${state} (${doctors.length} doctor${doctors.length === 1 ? '' : 's'})</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Doctor Name</th>
+                <th>Email</th>
+                <th>Offices</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${doctors
+                .map(
+                  (doc) => `
+                <tr>
+                  <td>${doc.firstname} ${doc.lastname}</td>
+                  <td>${doc.email}</td>
+                  <td>${(doc.offices || []).filter((o) => o !== null).join(', ') || '<em>None</em>'}</td>
+                </tr>
+              `,
+                )
+                .join('')}
+            </tbody>
+          </table>
+        `;
+          })
+          .join('')}
+      `;
+    } else {
+      html = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+
+    $('#reportContent').html(html);
+  }
+</script>

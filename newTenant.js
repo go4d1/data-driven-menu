@@ -12,7 +12,6 @@ const PG_BIN = '/usr/local/opt/postgresql@17/bin';
 const BASE_DIR = __dirname;
 const TENANTS_FILE = path.join(BASE_DIR, 'tenants.json');
 const TEMPLATE_DB = 'aaa';
-const TEMPLATE_PORT = 5432;
 const DOMAIN = 'medicalpod.fom';
 
 // Parse subdomain from argument (accepts bare name or full URL)
@@ -42,7 +41,12 @@ if (registry.tenants[subdomain]) {
   process.exit(1);
 }
 
-const port = registry.nextPort;
+// Template's port comes from the registry so it follows aaa if it moves.
+const TEMPLATE_PORT = registry.tenants[TEMPLATE_DB].port;
+
+// Never reuse a port already assigned to an instance, even if nextPort is stale.
+const usedPorts = [registry.admin, ...Object.values(registry.tenants)].map((t) => t.port);
+const port = Math.max(registry.nextPort, ...usedPorts.map((p) => p + 1));
 const dataDir = path.join(BASE_DIR, subdomain);
 const logFile = path.join(dataDir, 'logfile');
 

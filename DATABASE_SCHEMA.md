@@ -175,7 +175,7 @@ Index: `widgets_pkey` (unique, `id`).
 # `doctors` schema (aaa only)
 
 The doctor-credentialing application, loaded as a per-tenant app for `aaa`.
-Source of truth: [aaa/doctors/schema.sql](aaa/doctors/schema.sql). All tables
+Source of truth: [tenants/aaa/doctors/schema.sql](tenants/aaa/doctors/schema.sql). All tables
 use a `created_at` / `updated_at` timestamp pair (default `CURRENT_TIMESTAMP`)
 and most support soft-deletion via a nullable `deleted_at`.
 

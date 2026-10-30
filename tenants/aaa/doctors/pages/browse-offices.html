@@ -1,0 +1,261 @@
+<div id="alerts"></div>
+<h2>Browse Offices</h2>
+<p class="section-description">
+  View, create, edit, and delete office locations.
+</p>
+
+<div
+  style="
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  "
+>
+  <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+    <label for="officeSearch">Search</label>
+    <input
+      type="text"
+      id="officeSearch"
+      placeholder="Search by name, street, city, or zip"
+    />
+  </div>
+  <div class="form-group" style="margin-bottom: 0; min-width: 150px;">
+    <label for="officeStateFilter">State</label>
+    <select id="officeStateFilter">
+      <option value="">All states</option>
+      <option value="DE">DE</option>
+      <option value="MD">MD</option>
+      <option value="VA">VA</option>
+    </select>
+  </div>
+  <button onclick="loadOffices()">Search</button>
+  <button onclick="openOfficeModal()" class="success">+ Add Office</button>
+</div>
+
+<div class="table-container">
+  <table id="officesTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Street</th>
+        <th>City</th>
+        <th>State</th>
+        <th>ZIP</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<div id="officeModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="officeModalTitle">Add Office</h2>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="officeId" />
+      <div class="form-group">
+        <label for="officeName">Name</label>
+        <input type="text" id="officeName" maxlength="255" />
+      </div>
+      <div class="form-group">
+        <label for="officeStreet">Street</label>
+        <input type="text" id="officeStreet" maxlength="255" />
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="officeCity">City</label>
+          <input type="text" id="officeCity" maxlength="100" />
+        </div>
+        <div class="form-group">
+          <label for="officeState">State</label>
+          <select id="officeState">
+            <option value="DE">DE</option>
+            <option value="MD">MD</option>
+            <option value="VA">VA</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="officeZip">ZIP</label>
+        <input type="text" id="officeZip" maxlength="10" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button onclick="saveOffice()" class="success">Save</button>
+      <button onclick="closeOfficeModal()" class="secondary">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  if (!document.getElementById('doctors-admin-css')) {
+    const l = document.createElement('link');
+    l.id = 'doctors-admin-css';
+    l.rel = 'stylesheet';
+    l.href = '/tenants/aaa/doctors/admin.css';
+    document.head.appendChild(l);
+  }
+
+  function showAlert(message, type) {
+    const alertHtml = `<div class="alert alert-${type}">${message}</div>`;
+    $('#alerts').append(alertHtml);
+    setTimeout(() => {
+      $(`#alerts .alert-${type}`).fadeOut(function () {
+        $(this).remove();
+      });
+    }, 5000);
+  }
+
+  function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function loadOffices() {
+    const search = $('#officeSearch').val();
+    const state = $('#officeStateFilter').val();
+
+    $.ajax({
+      url: '/api/admin/offices',
+      method: 'GET',
+      data: { search, state },
+      success: function (response) {
+        const rows = response.data || [];
+        const tbody = rows
+          .map(
+            (o) => `
+              <tr>
+                <td>${escapeHtml(o.name)}</td>
+                <td>${escapeHtml(o.street)}</td>
+                <td>${escapeHtml(o.city)}</td>
+                <td>${escapeHtml(o.state)}</td>
+                <td>${escapeHtml(o.zip)}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button onclick='editOffice(${o.id})'>Edit</button>
+                    <button onclick='deleteOffice(${o.id})' class="danger">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            `,
+          )
+          .join('');
+
+        $('#officesTable tbody').html(
+          tbody ||
+            '<tr><td colspan="6" style="text-align: center; color: #999;">No offices found</td></tr>',
+        );
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to load offices';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function openOfficeModal(office) {
+    $('#officeModalTitle').text(office ? 'Edit Office' : 'Add Office');
+    $('#officeId').val(office ? office.id : '');
+    $('#officeName').val(office ? office.name : '');
+    $('#officeStreet').val(office ? office.street : '');
+    $('#officeCity').val(office ? office.city : '');
+    $('#officeState').val(office ? office.state : 'DE');
+    $('#officeZip').val(office ? office.zip : '');
+    $('#officeModal').css('display', 'block');
+  }
+
+  function closeOfficeModal() {
+    $('#officeModal').css('display', 'none');
+  }
+
+  function editOffice(id) {
+    $.ajax({
+      url: `/api/admin/offices/${id}`,
+      method: 'GET',
+      success: function (response) {
+        openOfficeModal(response.data);
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to load office';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function saveOffice() {
+    const id = $('#officeId').val();
+    const payload = {
+      name: $('#officeName').val().trim(),
+      street: $('#officeStreet').val().trim(),
+      city: $('#officeCity').val().trim(),
+      state: $('#officeState').val(),
+      zip: $('#officeZip').val().trim(),
+    };
+
+    if (
+      !payload.name ||
+      !payload.street ||
+      !payload.city ||
+      !payload.state ||
+      !payload.zip
+    ) {
+      showAlert('All fields are required', 'error');
+      return;
+    }
+
+    const url = id ? `/api/admin/offices/${id}` : '/api/admin/offices';
+    const method = id ? 'PUT' : 'POST';
+
+    $.ajax({
+      url,
+      method,
+      contentType: 'application/json',
+      data: JSON.stringify(payload),
+      success: function () {
+        showAlert(id ? 'Office updated' : 'Office created', 'success');
+        closeOfficeModal();
+        loadOffices();
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to save office';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  function deleteOffice(id) {
+    if (!confirm('Are you sure? This will soft-delete the office.')) return;
+
+    $.ajax({
+      url: `/api/admin/offices/${id}`,
+      method: 'DELETE',
+      success: function () {
+        showAlert('Office deleted', 'success');
+        loadOffices();
+      },
+      error: function (xhr) {
+        const error = xhr.responseJSON?.error || 'Failed to delete office';
+        showAlert(error, 'error');
+      },
+    });
+  }
+
+  $(document).off('click.officeModal').on('click.officeModal', '#officeModal', function (e) {
+    if (e.target.id === 'officeModal') closeOfficeModal();
+  });
+
+  $(document).off('keyup.officeSearch').on('keyup.officeSearch', '#officeSearch', function (e) {
+    if (e.key === 'Enter') loadOffices();
+  });
+
+  loadOffices();
+</script>
